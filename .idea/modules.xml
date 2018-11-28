@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/lcms.iml" filepath="$PROJECT_DIR$/.idea/lcms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-admin/lcms-admin.iml" filepath="$PROJECT_DIR$/lcms-admin/lcms-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform-admin/lcms-admin.iml" filepath="$PROJECT_DIR$/platform-admin/lcms-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-common/lcms-common.iml" filepath="$PROJECT_DIR$/lcms-common/lcms-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform-common/lcms-common.iml" filepath="$PROJECT_DIR$/platform-common/lcms-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-generator/lcms-generator.iml" filepath="$PROJECT_DIR$/lcms-generator/lcms-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform-generator/lcms-generator.iml" filepath="$PROJECT_DIR$/platform-generator/lcms-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-sso/lcms-sso.iml" filepath="$PROJECT_DIR$/lcms-sso/lcms-sso.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform-sso/lcms-sso.iml" filepath="$PROJECT_DIR$/platform-sso/lcms-sso.iml" />
+      <module fileurl="file://$PROJECT_DIR$/platform-ui/lcms-ui.iml" filepath="$PROJECT_DIR$/platform-ui/lcms-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-web/lcms-web.iml" filepath="$PROJECT_DIR$/lcms-web/lcms-web.iml" />
+    </modules>
+  </component>
+</project>

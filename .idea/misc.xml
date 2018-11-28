@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="FrameworkDetectionExcludesConfiguration">
-    <file type="web" url="file://$PROJECT_DIR$/ll" />
-    <file type="web" url="file://$PROJECT_DIR$/platform-ui" />
-    <file type="web" url="file://$PROJECT_DIR$/platform-weba" />
-    <file type="web" url="file://$PROJECT_DIR$/platform-webui" />
-    <file type="web" url="file://$PROJECT_DIR$/pp" />
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/platform-ui/pom.xml" />
+        <option value="$PROJECT_DIR$/platform-sso/pom.xml" />
+        <option value="$PROJECT_DIR$/lcms-web/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/gg/pom.xml" />
-        <option value="$PROJECT_DIR$/ll/pom.xml" />
-        <option value="$PROJECT_DIR$/platform-web/pom.xml" />
-        <option value="$PROJECT_DIR$/platform-weba/pom.xml" />
-        <option value="$PROJECT_DIR$/platform-webui/pom.xml" />
-        <option value="$PROJECT_DIR$/pp/pom.xml" />
+        <option value="$PROJECT_DIR$/platform-sso/pom.xml" />
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/out" />
-  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_10" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>

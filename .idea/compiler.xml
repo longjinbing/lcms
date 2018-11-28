@@ -6,21 +6,22 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="platform-admin" />
-        <module name="platform-common" />
-        <module name="platform-generator" />
-        <module name="platform-ui" />
-        <module name="platform-vote" />
+        <module name="lcms-admin" />
+        <module name="lcms-common" />
+        <module name="lcms-generator" />
+        <module name="lcms-sso" />
+        <module name="lcms-ui" />
+        <module name="lcms-web" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="gg" target="1.8" />
-      <module name="ll" target="1.8" />
-      <module name="platform-web" target="1.8" />
-      <module name="platform-weba" target="1.8" />
-      <module name="platform-webui" target="1.8" />
-      <module name="platformweb" target="1.8" />
-      <module name="pp" target="1.8" />
+      <module name="lcms" target="1.8" />
+      <module name="lcms-admin" target="1.8" />
+      <module name="lcms-common" target="1.8" />
+      <module name="lcms-generator" target="1.8" />
+      <module name="lcms-sso" target="1.8" />
+      <module name="lcms-ui" target="1.8" />
+      <module name="lcms-web" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
