@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:mysql://106.14.222.187:3306/test?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: 123456
+  thymeleaf:
+    cache: true
+  redis:
+    database: 0
+    host: 106.14.222.187
+    port: 6379
+    password:
+  oauth2:
+    client:
+      client-id: platform
+      clientSecret: 123456
+      accessTokenUri: http://106.14.222.187:8080/auth/oauth/token
+      userAuthorizationUri: http://106.14.222.187:8080/auth/oauth/authorize
+      egistered-redirect-uri: http://106.14.222.187:8080/sysmenu/menulist
+    resource:
+    userInfoUri: http://106.14.222.187:8080/auth/user/me
+  servlet:
+    multipart:
+      location: /usr/file/
+mybatis-plus:
+  configuration:
+    cache-enabled: true
+

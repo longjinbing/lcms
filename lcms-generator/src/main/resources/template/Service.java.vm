@@ -1,0 +1,15 @@
+package ${package}.service;
+
+import com.ljb.Base.BaseService;
+import ${package}.entity.${entityName};
+
+/**
+ * ${comment}Service接口
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public interface ${entityName}Service extends BaseService<${entityName},${pk.dataType}> {
+
+}

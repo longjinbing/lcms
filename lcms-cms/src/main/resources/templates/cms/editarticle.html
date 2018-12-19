@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>编辑文章</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-form ref="addForm" :model="addFormData" hide-required-asterisk :rules="addRules" size="medium"
+             label-width="80px">
+        <input id="articleId" type="text" class="input-hidden" v-model="addFormData.id" th:value="${articleId}">
+        <input id="categoryId" type="text" class="input-hidden" v-model="addFormData.categoryId" th:value="${categoryId}">
+        <br><br>
+        <el-row>
+            <el-col :span="14">
+                <el-form-item label="文章标题" prop="title">
+                    <el-input v-model="addFormData.title" placeholder="文章标题（1-50字）"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="6"><el-form-item label="作者" prop="author">
+                <el-input v-model="addFormData.author" placeholder="作者"></el-input>
+            </el-form-item></el-col>
+            <el-col :span="6"><el-form-item label="发布时间" prop="publishTime">
+                <el-date-picker
+                        v-model="addFormData.publishTime"
+                        type="datetime"
+                        value-format="yyyy-MM-dd hh:mm:ss"
+                        format="yyyy-MM-dd hh:mm:ss"
+                        placeholder="选择日期时间"
+                        align="right"
+                        :picker-options="pickerOptions">
+                </el-date-picker>
+            </el-form-item></el-col>
+        </el-row>
+        <el-row>
+            <el-form-item label="导航图片" prop="author">
+            <upload-image :limit="5" v-model="addFormData.image" :image.sync="addFormData.image"></upload-image>
+            </el-form-item>
+        </el-row>
+        <el-row>
+            <el-col :span="22">
+                <el-form-item label="文章内容" class="m-form-item">
+                    <u-editor :content.sync="addFormData.content"></u-editor>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-form-item label="能否评价" prop="commentable">
+                <el-radio-group v-model="addFormData.commentable" size="medium">
+                    <el-radio-button v-for="(item,index) in ableList" :label="index" >{{item}}</el-radio-button>
+                </el-radio-group>
+            </el-form-item>
+        </el-row>
+
+        <el-row>
+            <el-form-item>
+                <el-button type="primary" @click="saveFormData('addForm')">保存</el-button>
+                <el-button @click="returnParentTab">返回</el-button>
+            </el-form-item>
+        </el-row>
+    </el-form>
+
+</div>
+<div th:include="lib/js :: js"></div>
+<div th:include="lib/ueditor :: js"></div>
+<script th:src="@{/static/cms/editarticle.js}"></script>
+</body>
+</html>

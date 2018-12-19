@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljb.dao.ApiOrderDao">
+    <update id="updateByIdSelective" parameterType="com.ljb.entity.ApiOrder">
+        update shop_order
+        <set>
+            <if test="orderSn != null">
+                `order_sn` = #{orderSn},
+            </if>
+            <if test="userId != null">
+                `user_id` = #{userId},
+            </if>
+            <if test="shippingStatus != null">
+                `shipping_status` = #{shippingStatus},
+            </if>
+            <if test="consignee != null">
+                `consignee` = #{consignee},
+            </if>
+            <if test="country != null">
+                `country` = #{country},
+            </if>
+            <if test="province != null">
+                `province` = #{province},
+            </if>
+            <if test="city != null">
+                `city` = #{city},
+            </if>
+            <if test="district != null">
+                `district` = #{district},
+            </if>
+            <if test="address != null">
+                `address` = #{address},
+            </if>
+            <if test="phone != null">
+                `phone` = #{phone},
+            </if>
+            <if test="postscript != null">
+                `postscript` = #{postscript},
+            </if>
+            <if test="shippingId != null">
+                `shipping_id` = #{shippingId},
+            </if>
+            <if test="shippingName != null">
+                `shipping_name` = #{shippingName},
+            </if>
+            <if test="payId != null">
+                `pay_id` = #{payId},
+            </if>
+            <if test="payName != null">
+                `pay_name` = #{payName},
+            </if>
+            <if test="shippingFee != null">
+                `shipping_fee` = #{shippingFee},
+            </if>
+            <if test="actualPrice != null">
+                `actual_price` = #{actualPrice},
+            </if>
+            <if test="integral != null">
+                `integral` = #{integral},
+            </if>
+            <if test="integralMoney != null">
+                `integral_money` = #{integralMoney},
+            </if>
+            <if test="orderPrice != null">
+                `order_price` = #{orderPrice},
+            </if>
+            <if test="goodsPrice != null">
+                `goods_price` = #{goodsPrice},
+            </if>
+            <if test="confirmTime != null">
+                `confirm_time` = #{confirmTime},
+            </if>
+            <if test="payTime != null">
+                `pay_time` = #{payTime},
+            </if>
+            <if test="freightPrice != null">
+                `freight_price` = #{freightPrice},
+            </if>
+            <if test="couponId != null">
+                `coupon_id` = #{couponId},
+            </if>
+            <if test="parentId != null">
+                `parent_id` = #{parentId},
+            </if>
+            <if test="couponPrice != null">
+                `coupon_price` = #{couponPrice},
+            </if>
+            <if test="callbackStatus != null">
+                `callback_status` = #{callbackStatus},
+            </if>
+            <if test="shippingNo != null">
+                `shipping_no` = #{shippingNo},
+            </if>
+            <if test="fullCutPrice != null">
+                `full_cut_price` = #{fullCutPrice},
+            </if>
+            <if test="orderType != null">
+                `order_type` = #{orderType},
+            </if>
+            <if test="isDelete != null">
+                `is_delete` = #{isDelete},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="createId != null">
+                `create_id` = #{createId},
+            </if>
+            <if test="createTime != null">
+                `create_time` = #{createTime},
+            </if>
+            <if test="updateId != null">
+                `update_id` = #{updateId},
+            </if>
+            <if test="updateTime != null">
+                `update_time` = #{updateTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO shop_order
+        (
+        `id` ,
+        `order_sn` ,
+        `user_id` ,
+        `shipping_status` ,
+        `consignee` ,
+        `country` ,
+        `province` ,
+        `city` ,
+        `district` ,
+        `address` ,
+        `phone` ,
+        `postscript` ,
+        `shipping_id` ,
+        `shipping_name` ,
+        `pay_id` ,
+        `pay_name` ,
+        `shipping_fee` ,
+        `actual_price` ,
+        `integral` ,
+        `integral_money` ,
+        `order_price` ,
+        `goods_price` ,
+        `confirm_time` ,
+        `pay_time` ,
+        `freight_price` ,
+        `coupon_id` ,
+        `parent_id` ,
+        `coupon_price` ,
+        `callback_status` ,
+        `shipping_no` ,
+        `full_cut_price` ,
+        `order_type` ,
+        `is_delete` ,
+        `status` ,
+        `create_id` ,
+        `create_time` ,
+        `update_id` ,
+        `update_time` )
+        values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (
+            #{item.id},
+            #{item.orderSn},
+            #{item.userId},
+            #{item.shippingStatus},
+            #{item.consignee},
+            #{item.country},
+            #{item.province},
+            #{item.city},
+            #{item.district},
+            #{item.address},
+            #{item.phone},
+            #{item.postscript},
+            #{item.shippingId},
+            #{item.shippingName},
+            #{item.payId},
+            #{item.payName},
+            #{item.shippingFee},
+            #{item.actualPrice},
+            #{item.integral},
+            #{item.integralMoney},
+            #{item.orderPrice},
+            #{item.goodsPrice},
+            #{item.confirmTime},
+            #{item.payTime},
+            #{item.freightPrice},
+            #{item.couponId},
+            #{item.parentId},
+            #{item.couponPrice},
+            #{item.callbackStatus},
+            #{item.shippingNo},
+            #{item.fullCutPrice},
+            #{item.orderType},
+            #{item.isDelete},
+            #{item.status},
+            #{item.createId},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateTime} )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="java.util.List">>
+        <foreach item="item" index="index" collection="list" separator=";">
+            update shop_order
+            <set>
+                <if test="item.id != null">`id` =
+                    #{item.id} ,
+                </if>
+                <if test="item.orderSn != null">`order_sn` =
+                    #{item.orderSn} ,
+                </if>
+                <if test="item.userId != null">`user_id` =
+                    #{item.userId} ,
+                </if>
+                <if test="item.shippingStatus != null">`shipping_status` =
+                    #{item.shippingStatus} ,
+                </if>
+                <if test="item.consignee != null">`consignee` =
+                    #{item.consignee} ,
+                </if>
+                <if test="item.country != null">`country` =
+                    #{item.country} ,
+                </if>
+                <if test="item.province != null">`province` =
+                    #{item.province} ,
+                </if>
+                <if test="item.city != null">`city` =
+                    #{item.city} ,
+                </if>
+                <if test="item.district != null">`district` =
+                    #{item.district} ,
+                </if>
+                <if test="item.address != null">`address` =
+                    #{item.address} ,
+                </if>
+                <if test="item.phone != null">`phone` =
+                    #{item.phone} ,
+                </if>
+                <if test="item.postscript != null">`postscript` =
+                    #{item.postscript} ,
+                </if>
+                <if test="item.shippingId != null">`shipping_id` =
+                    #{item.shippingId} ,
+                </if>
+                <if test="item.shippingName != null">`shipping_name` =
+                    #{item.shippingName} ,
+                </if>
+                <if test="item.payId != null">`pay_id` =
+                    #{item.payId} ,
+                </if>
+                <if test="item.payName != null">`pay_name` =
+                    #{item.payName} ,
+                </if>
+                <if test="item.shippingFee != null">`shipping_fee` =
+                    #{item.shippingFee} ,
+                </if>
+                <if test="item.actualPrice != null">`actual_price` =
+                    #{item.actualPrice} ,
+                </if>
+                <if test="item.integral != null">`integral` =
+                    #{item.integral} ,
+                </if>
+                <if test="item.integralMoney != null">`integral_money` =
+                    #{item.integralMoney} ,
+                </if>
+                <if test="item.orderPrice != null">`order_price` =
+                    #{item.orderPrice} ,
+                </if>
+                <if test="item.goodsPrice != null">`goods_price` =
+                    #{item.goodsPrice} ,
+                </if>
+                <if test="item.confirmTime != null">`confirm_time` =
+                    #{item.confirmTime} ,
+                </if>
+                <if test="item.payTime != null">`pay_time` =
+                    #{item.payTime} ,
+                </if>
+                <if test="item.freightPrice != null">`freight_price` =
+                    #{item.freightPrice} ,
+                </if>
+                <if test="item.couponId != null">`coupon_id` =
+                    #{item.couponId} ,
+                </if>
+                <if test="item.parentId != null">`parent_id` =
+                    #{item.parentId} ,
+                </if>
+                <if test="item.couponPrice != null">`coupon_price` =
+                    #{item.couponPrice} ,
+                </if>
+                <if test="item.callbackStatus != null">`callback_status` =
+                    #{item.callbackStatus} ,
+                </if>
+                <if test="item.shippingNo != null">`shipping_no` =
+                    #{item.shippingNo} ,
+                </if>
+                <if test="item.fullCutPrice != null">`full_cut_price` =
+                    #{item.fullCutPrice} ,
+                </if>
+                <if test="item.orderType != null">`order_type` =
+                    #{item.orderType} ,
+                </if>
+                <if test="item.isDelete != null">`is_delete` =
+                    #{item.isDelete} ,
+                </if>
+                <if test="item.status != null">`status` =
+                    #{item.status} ,
+                </if>
+                <if test="item.createId != null">`create_id` =
+                    #{item.createId} ,
+                </if>
+                <if test="item.createTime != null">`create_time` =
+                    #{item.createTime} ,
+                </if>
+                <if test="item.updateId != null">`update_id` =
+                    #{item.updateId} ,
+                </if>
+                <if test="item.updateTime != null">`update_time` =
+                    #{item.updateTime}
+                </if>
+            </set>
+            where `id` = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectMapById" resultMap="DetailsMap">
+        SELECT
+                t.`id` ,   t.`status`,         t.`order_sn` ,            t.`user_id` ,            t.`shipping_status` ,            t.`consignee` ,            t.`country` ,            t.`province` ,            t.`city` ,            t.`district` ,            t.`address` ,            t.`phone` ,            t.`postscript` ,            t.`shipping_id` ,            t.`shipping_name` ,            t.`pay_id` ,            t.`pay_name` ,            t.`shipping_fee` ,            t.`actual_price` ,            t.`integral` ,            t.`integral_money` ,            t.`order_price` ,            t.`goods_price` ,            t.`confirm_time` ,            t.`pay_time` ,            t.`freight_price` ,            t.`coupon_id` ,            t.`parent_id` ,            t.`coupon_price` ,            t.`callback_status` ,            t.`shipping_no` ,            t.`full_cut_price` ,            t.`order_type`
+        FROM shop_order t
+                 WHERE
+                 t.`is_delete`=1 and
+                  t.`id`=#{id}
+    </select>
+
+    <select id="selectMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`order_sn` , t.`user_id` , t.`shipping_status` , t.`consignee` , t.`country` , t.`province` ,
+        t.`city` , t.`district` , t.`address` , t.`phone` , t.`postscript` , t.`shipping_id` , t.`shipping_name` ,
+        t.`pay_id` , t.`pay_name` , t.`shipping_fee` , t.`actual_price` , t.`integral` , t.`integral_money` ,
+        t.`order_price` , t.`goods_price` , t.`confirm_time` , t.`pay_time` , t.`freight_price` , t.`coupon_id` ,
+        t.`parent_id` , t.`coupon_price` , t.`callback_status` , t.`shipping_no` , t.`full_cut_price` , t.`order_type`,t.`status`
+        FROM shop_order t
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+                and t.`is_delete`=1
+            </if>
+            <if test=" userId != null ">
+                and t.`user_id`=#{userId}
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="orderGoods" parameterType="long" resultType="map">
+        SELECT
+        t.`id` , t.`order_id` , t.`goods_id` , t.`goods_name` , t.`goods_sn` , t.`product_id` , t.`number` ,
+        t.`market_price` , t.`retail_price` , t.`goods_specifition_name_value` , t.`is_real` , t.`goods_specifition_ids`
+        , t.`list_pic_url`
+         FROM shop_order_goods t
+         where t.`order_id`=#{id} and t.`is_delete`=1 and t.`status`=1
+`    </select>
+
+    <select id="selectTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_order
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=1
+            </if>
+            <if test=" userId != null ">
+                and `user_id`=#{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="recyleMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`order_sn` , t.`user_id` , t.`shipping_status` , t.`consignee` , t.`country` , t.`province` ,
+        t.`city` , t.`district` , t.`address` , t.`phone` , t.`postscript` , t.`shipping_id` , t.`shipping_name` ,
+        t.`pay_id` , t.`pay_name` , t.`shipping_fee` , t.`actual_price` , t.`integral` , t.`integral_money` ,
+        t.`order_price` , t.`goods_price` , t.`confirm_time` , t.`pay_time` , t.`freight_price` , t.`coupon_id` ,
+        t.`parent_id` , t.`coupon_price` , t.`callback_status` , t.`shipping_no` , t.`full_cut_price` , t.`order_type`
+        FROM shop_order t left join sys_user s on s.`id`= t.`update_id`
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+                and t.`is_delete`=0
+            </if>
+
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="recyleTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_order
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=0
+            </if>
+        </where>
+    </select>
+
+    <delete id="physicsDeleteBatch">
+        delete from shop_order where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="emptyRecyle">
+        delete from shop_order where is_delete=0
+    </delete>
+
+    <delete id="deleteBatch">
+        update shop_order set t.`is_delete`=0
+        where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <resultMap type="map" id="DetailsMap">
+        <result property="id" column="id"/>
+        <result property="orderSn" column="order_sn"/>
+        <result property="userId" column="user_id"/>
+        <result property="shippingStatus" column="shipping_status"/>
+        <result property="consignee" column="consignee"/>
+        <result property="country" column="country"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="district" column="district"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="postscript" column="postscript"/>
+        <result property="shippingId" column="shipping_id"/>
+        <result property="shippingName" column="shipping_name"/>
+        <result property="payId" column="pay_id"/>
+        <result property="payName" column="pay_name"/>
+        <result property="shippingFee" column="shipping_fee"/>
+        <result property="actualPrice" column="actual_price"/>
+        <result property="integral" column="integral"/>
+        <result property="integralMoney" column="integral_money"/>
+        <result property="orderPrice" column="order_price"/>
+        <result property="goodsPrice" column="goods_price"/>
+        <result property="confirmTime" column="confirm_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="freightPrice" column="freight_price"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="couponPrice" column="coupon_price"/>
+        <result property="callbackStatus" column="callback_status"/>
+        <result property="shippingNo" column="shipping_no"/>
+        <result property="fullCutPrice" column="full_cut_price"/>
+        <result property="orderType" column="order_type"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="status" column="status"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateName" column="updateName"/>
+        <result property="createName" column="createName"/>
+    </resultMap>
+
+    <resultMap type="map" id="listResultMap">
+        <result property="id" column="id"/>
+        <result property="orderSn" column="order_sn"/>
+        <result property="userId" column="user_id"/>
+        <result property="shippingStatus" column="shipping_status"/>
+        <result property="consignee" column="consignee"/>
+        <result property="country" column="country"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="district" column="district"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="postscript" column="postscript"/>
+        <result property="shippingId" column="shipping_id"/>
+        <result property="shippingName" column="shipping_name"/>
+        <result property="payId" column="pay_id"/>
+        <result property="payName" column="pay_name"/>
+        <result property="shippingFee" column="shipping_fee"/>
+        <result property="actualPrice" column="actual_price"/>
+        <result property="integral" column="integral"/>
+        <result property="integralMoney" column="integral_money"/>
+        <result property="orderPrice" column="order_price"/>
+        <result property="goodsPrice" column="goods_price"/>
+        <result property="confirmTime" column="confirm_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="freightPrice" column="freight_price"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="couponPrice" column="coupon_price"/>
+        <result property="callbackStatus" column="callback_status"/>
+        <result property="shippingNo" column="shipping_no"/>
+        <result property="fullCutPrice" column="full_cut_price"/>
+        <result property="orderType" column="order_type"/>
+        <result property="status" column="status"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateName" column="updateName"/>
+    </resultMap>
+
+    <resultMap type="com.ljb.entity.ApiOrder" id="BaseResultMap">
+        <result property="id" column="id"/>
+        <result property="orderSn" column="order_sn"/>
+        <result property="userId" column="user_id"/>
+        <result property="shippingStatus" column="shipping_status"/>
+        <result property="consignee" column="consignee"/>
+        <result property="country" column="country"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="district" column="district"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="postscript" column="postscript"/>
+        <result property="shippingId" column="shipping_id"/>
+        <result property="shippingName" column="shipping_name"/>
+        <result property="payId" column="pay_id"/>
+        <result property="payName" column="pay_name"/>
+        <result property="shippingFee" column="shipping_fee"/>
+        <result property="actualPrice" column="actual_price"/>
+        <result property="integral" column="integral"/>
+        <result property="integralMoney" column="integral_money"/>
+        <result property="orderPrice" column="order_price"/>
+        <result property="goodsPrice" column="goods_price"/>
+        <result property="confirmTime" column="confirm_time"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="freightPrice" column="freight_price"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="couponPrice" column="coupon_price"/>
+        <result property="callbackStatus" column="callback_status"/>
+        <result property="shippingNo" column="shipping_no"/>
+        <result property="fullCutPrice" column="full_cut_price"/>
+        <result property="orderType" column="order_type"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="status" column="status"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+	    `id`,    	    `order_sn`,    	    `user_id`,    	    `shipping_status`,    	    `consignee`,    	    `country`,    	    `province`,    	    `city`,    	    `district`,    	    `address`,    	    `phone`,    	    `postscript`,    	    `shipping_id`,    	    `shipping_name`,    	    `pay_id`,    	    `pay_name`,    	    `shipping_fee`,    	    `actual_price`,    	    `integral`,    	    `integral_money`,    	    `order_price`,    	    `goods_price`,    	    `confirm_time`,    	    `pay_time`,    	    `freight_price`,    	    `coupon_id`,    	    `parent_id`,    	    `coupon_price`,    	    `callback_status`,    	    `shipping_no`,    	    `full_cut_price`,    	    `order_type`,    	    `is_delete`,    	    `status`,    	    `create_id`,    	    `create_time`,    	    `update_id`,    	    `update_time`      	</sql>
+
+</mapper>

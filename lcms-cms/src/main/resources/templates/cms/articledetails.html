@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>编辑文章</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <input id="articleId" type="text" class="input-hidden" v-model="detailsData.id" th:value="${articleId}">
+    <el-row type="flex" justify="start">
+        <el-radio-group v-model="pc" size="mini">
+            <el-radio-button :label="true">电脑版</el-radio-button>
+            <el-radio-button :label="false">手机版</el-radio-button>
+        </el-radio-group>
+    </el-row>
+    <div v-if="!pc" class="mobile">
+        <div class="mobile-iframe">
+            <div class="scroll-iframe">
+                <div class="mobile-content">
+                    <el-row class="article">
+                        <el-col :span="24">
+                            <el-row class="article-header">
+                                <h4 class="article-title">{{datailsData.title}}</h4>
+                                <p class="article-publishtime">{{datailsData.publishTime}}</p>
+                            </el-row>
+                            <el-row class="article-body">
+                                <div class="article-content" v-html="datailsData.content">
+
+                                </div>
+                            </el-row>
+                            <el-row class="article-footer" justify="space-between">
+                                <p class="article-author"><span>作者：</span><span>{{datailsData.author}}</span></p>
+                            </el-row>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <el-row v-if="pc" class="article">
+        <el-col :span="24">
+            <el-row class="article-header">
+                <h4 class="article-title">{{datailsData.title}}</h4>
+                <p class="article-publishtime">{{datailsData.publishTime}}</p>
+            </el-row>
+            <el-row class="article-body">
+                <div class="article-content" v-html="datailsData.content">
+
+                </div>
+            </el-row>
+            <el-row class="article-footer" justify="space-between">
+                <p class="article-author"><span>作者：</span><span>{{datailsData.author}}</span></p>
+            </el-row>
+        </el-col>
+    </el-row>
+
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/cms/articledetails.js}"></script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljb.dao.ApiArticleDao">
+    <cache-ref namespace="com.ljb.dao.ApiArticleDao"></cache-ref>
+    <update id="updateByIdSelective" parameterType="com.ljb.entity.ApiArticle">
+        update cms_article
+        <set>
+            <if test="title != null">
+                `title` = #{title},
+            </if>
+            <if test="image != null">
+                `image` = #{image},
+            </if>
+            <if test="content != null">
+                `content` = #{content},
+            </if>
+            <if test="viewCount != null">
+                `view_count` = #{viewCount},
+            </if>
+            <if test="orderNum != null">
+                `order_num` = #{orderNum},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="createTime != null">
+                `create_time` = #{createTime},
+            </if>
+            <if test="createId != null">
+                `create_id` = #{createId},
+            </if>
+            <if test="updateTime != null">
+                `update_time` = #{updateTime},
+            </if>
+            <if test="categoryId != null">
+                `category_id` = #{categoryId},
+            </if>
+            <if test="isDelete != null">
+                `is_delete` = #{isDelete},
+            </if>
+            <if test="updateId != null">
+                `update_id` = #{updateId},
+            </if>
+            <if test="author != null">
+                `author` = #{author},
+            </if>
+            <if test="publishTime != null">
+                `publish_time` = #{publishTime},
+            </if>
+            <if test="commentable != null">
+                `commentable` = #{commentable},
+            </if>
+            <if test="attachment != null">
+                `attachment` = #{attachment}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO cms_article
+        (
+        `id` ,
+        `title` ,
+        `image` ,
+        `content` ,
+        `view_count` ,
+        `order_num` ,
+        `status` ,
+        `create_time` ,
+        `create_id` ,
+        `update_time` ,
+        `category_id` ,
+        `is_delete` ,
+        `update_id` ,
+        `author` ,
+        `publish_time` ,
+        `commentable` ,
+        `attachment` )
+        values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (
+            #{item.id},
+            #{item.title},
+            #{item.image},
+            #{item.content},
+            #{item.viewCount},
+            #{item.orderNum},
+            #{item.status},
+            #{item.createTime},
+            #{item.createId},
+            #{item.updateTime},
+            #{item.categoryId},
+            #{item.isDelete},
+            #{item.updateId},
+            #{item.author},
+            #{item.publishTime},
+            #{item.commentable},
+            #{item.attachment} )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="java.util.List">>
+        <foreach item="item" index="index" collection="list" separator=";">
+            update cms_article
+            <set>
+                <if test="item.id != null">`id` =
+                    #{item.id} ,
+                </if>
+                <if test="item.title != null">`title` =
+                    #{item.title} ,
+                </if>
+                <if test="item.image != null">`image` =
+                    #{item.image} ,
+                </if>
+                <if test="item.content != null">`content` =
+                    #{item.content} ,
+                </if>
+                <if test="item.viewCount != null">`view_count` =
+                    #{item.viewCount} ,
+                </if>
+                <if test="item.orderNum != null">`order_num` =
+                    #{item.orderNum} ,
+                </if>
+                <if test="item.status != null">`status` =
+                    #{item.status} ,
+                </if>
+                <if test="item.createTime != null">`create_time` =
+                    #{item.createTime} ,
+                </if>
+                <if test="item.createId != null">`create_id` =
+                    #{item.createId} ,
+                </if>
+                <if test="item.updateTime != null">`update_time` =
+                    #{item.updateTime} ,
+                </if>
+                <if test="item.categoryId != null">`category_id` =
+                    #{item.categoryId} ,
+                </if>
+                <if test="item.isDelete != null">`is_delete` =
+                    #{item.isDelete} ,
+                </if>
+                <if test="item.updateId != null">`update_id` =
+                    #{item.updateId} ,
+                </if>
+                <if test="item.author != null">`author` =
+                    #{item.author} ,
+                </if>
+                <if test="item.publishTime != null">`publish_time` =
+                    #{item.publishTime} ,
+                </if>
+                <if test="item.commentable != null">`commentable` =
+                    #{item.commentable} ,
+                </if>
+                <if test="item.attachment != null">`attachment` =
+                    #{item.attachment}
+                </if>
+            </set>
+            where `id` = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectMapById" resultMap="DetailsMap">
+        SELECT
+                t.`id` ,            t.`title` ,            t.`image` ,            t.`content` ,            t.`view_count` ,              t.`category_id` ,              t.`author` ,            t.`publish_time` ,            t.`commentable` ,            t.`attachment`                     ,s.`username` as createName,
+        s2.`username` as updateName
+        FROM cms_article t
+                 WHERE
+                 t.`is_delete`=1 and
+                  t.`id`=#{id}
+    </select>
+
+    <select id="selectMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`title` , t.`image`, t.`view_count`,t.`publsh_time`
+        FROM cms_article t
+        <where>
+            <if test="search != null">
+                t.`title` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+                and t.`is_delete`=1 and t.`status`=1
+            </if>
+            <if test=" categoryId != null ">
+                and t.`category_id`=#{categoryId}
+            </if>
+        </where>
+        ORDER BY t.`publish_time` DESC,t.`order_num` desc,t.view_count desc
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="selectTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM cms_article
+        <where>
+            <if test="search != null">
+                `title` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=1 and `status`=1
+            </if>
+            <if test=" categoryId != null ">
+                and `category_id`=#{categoryId}
+            </if>
+        </where>
+    </select>
+
+    <select id="recyleMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`title` , t.`image` , t.`content` , t.`view_count` , t.`order_num` , t.`status` , t.`create_time` ,
+        t.`create_id` , t.`update_time` , t.`category_id` , t.`is_delete` , t.`update_id` , t.`author` ,
+        t.`publish_time` , t.`commentable` , t.`attachment` ,s.`username` as updateName
+        FROM cms_article t left join sys_user s on s.`id`= t.`update_id`
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+                and t.`is_delete`=0
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="recyleTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM cms_article
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=0
+            </if>
+        </where>
+    </select>
+
+    <delete id="physicsDeleteBatch">
+        delete from cms_article where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="emptyRecyle">
+        delete from cms_article where is_delete=0
+    </delete>
+
+    <delete id="deleteBatch">
+        update cms_article set t.`is_delete`=0
+        where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <resultMap type="map" id="DetailsMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="image" column="image"/>
+        <result property="content" column="content"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createId" column="create_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="updateId" column="update_id"/>
+        <result property="author" column="author"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="commentable" column="commentable"/>
+        <result property="attachment" column="attachment"/>
+        <result property="updateName" column="updateName"/>
+        <result property="createName" column="createName"/>
+    </resultMap>
+
+    <resultMap type="map" id="listResultMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="image" column="image"/>
+        <result property="content" column="content"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="author" column="author"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="commentable" column="commentable"/>
+        <result property="attachment" column="attachment"/>
+        <result property="updateName" column="updateName"/>
+    </resultMap>
+
+    <resultMap type="com.ljb.entity.ApiArticle" id="BaseResultMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="image" column="image"/>
+        <result property="content" column="content"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createId" column="create_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="updateId" column="update_id"/>
+        <result property="author" column="author"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="commentable" column="commentable"/>
+        <result property="attachment" column="attachment"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+	    `id`,    	    `title`,    	    `image`,    	    `content`,    	    `view_count`,    	    `order_num`,    	    `status`,    	    `create_time`,    	    `create_id`,    	    `update_time`,    	    `category_id`,    	    `is_delete`,    	    `update_id`,    	    `author`,    	    `publish_time`,    	    `commentable`,    	    `attachment`      	</sql>
+
+</mapper>

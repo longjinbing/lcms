@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>系统配置管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-row class="toolbar">
+        <el-col :span="5">
+            <el-input placeholder="请输入内容" v-model="queryParams.text" size="medium" class="input-with-select">
+                <el-select v-model="queryParams.field" slot="prepend" placeholder="请选择">
+                    <el-option label="键名" value="item"></el-option>
+                </el-select>
+                <el-button slot="append" @click="loadData" icon="el-icon-search"></el-button>
+            </el-input>
+        </el-col>
+        <el-col :span="18" :offset="1">
+            <el-button type="success" @click="openAddFormDialogSame" size="medium"><i
+                    class="el-icon-plus">新增同级配置</i></el-button>
+            <el-button type="warning" @click="openAddFormDialogChild" size="medium"><i
+                    class="el-icon-plus">新增子配置</i></el-button>
+            <el-button type="danger" @click="deleteData" size="medium"><i class="el-icon-delete"></i>删除</el-button>
+
+            <el-button type="danger" @click="deleteData" size="medium"><i class="el-icon-delete"></i>删除</el-button>
+        </el-col>
+    </el-row>
+    <el-row class="data">
+        <el-table size="mini"
+                  border
+                  v-loading="tableLoading"
+                  @selection-change="selectedChange"
+                  :data="tableData" :default-sort="{prop: 'id', order: 'desc'}"
+                  @sort-change="sortChange"
+                  style="width: 100%">
+            <el-table-column
+                    type="selection"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    type="index"
+                    width="50"
+                    label="序号"
+                    :index="generatorIndex">
+            </el-table-column>
+            <el-table-column
+                    prop="item"
+                    label="键名">
+                <template slot-scope="scope">
+                    <span class="tree-table-space" v-for="item in scope.row.level"></span>
+                    <i v-if="scope.row.children ==undefined || scope.row.children.length == 0"  class="expand-icon"></i>
+                    <i @click="expandColumn(scope.$index,scope.row)" v-if="scope.row.children !=undefined && scope.row.children.length > 0"  class="expand-icon" :class="{'el-icon-plus':!scope.row.expand,'el-icon-minus':scope.row.expand}" ></i>
+                    <span>{{scope.row.item}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="value"
+                    label="键值">
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    label="状态"
+                    width="60">
+                <template slot-scope="scope">
+                    <el-tag
+                            size="mini" :type="tagTypeList[scope.row.status]">
+                        {{statusList[scope.row.status]}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="remark"
+                    label="备注">
+            </el-table-column>
+            <el-table-column
+                    prop="updateTime"
+                    label="更新时间"
+                    sortable="custom"
+                    width="150">
+            </el-table-column>
+            <el-table-column
+                    prop="updateName"
+                    label="操作人">
+            </el-table-column>
+            <el-table-column width="150"
+                             label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini" type="success"
+                            @click="updateDialogOpen(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini" type="info"
+                            @click="detailsDialogOpen(scope.$index, scope.row)">详情
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+    <div th:replace="common/component :: pagination"></div>
+    <el-dialog top="4vh" title="新增" :modal="false" :open="addDialogOpen" :visible.sync="visible.addFormVisible">
+        <el-form v-loading="formLoading" :rules="addRules" ref="addForm" :model="addFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="键名" prop="item">
+                        <el-input v-model="addFormData.item"></el-input>
+                    </el-form-item>
+                    <el-form-item label="备注" prop="remark">
+                        <el-input v-model="addFormData.remark"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="状态">
+                        <el-radio-group v-model="addFormData.status" size="medium">
+                            <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.addFormVisible = false">取 消</el-button>
+            <el-button @click="resetForm('addForm')">重置</el-button>
+            <el-button type="primary" @click="saveFormData('addForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="修改" :modal="false" :visible.sync="visible.editFormVisible">
+        <el-form v-loading="formLoading" ref="editForm" :rules="addRules" :model="editFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="键名" prop="item">
+                        <el-input v-model="editFormData.item"></el-input>
+                    </el-form-item>
+                    <el-form-item label="备注" prop="remark">
+                        <el-input v-model="editFormData.remark"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="状态">
+                        <el-radio-group v-model="editFormData.status" size="medium">
+                            <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.editFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateFormData('editForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="详情" :modal="false" :visible.sync="visible.detailsVisible">
+        <el-row v-loading="formLoading">
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>键名:</td>
+                        <td>{{detailsData.item}}</td>
+                    </tr>
+                    <tr>
+                        <td>键值:</td>
+                        <td>{{detailsData.value}}</td>
+                    </tr>
+                    <tr>
+                        <td>状态:</td>
+                        <td>
+                            <el-tag size="mini" :type="tagTypeList[detailsData.status]">
+                                {{statusList[detailsData.status]}}
+                            </el-tag>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>备注:</td>
+                        <td>{{detailsData.remark}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-col>
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>创建时间:</td>
+                        <td>{{detailsData.createTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>更新时间:</td>
+                        <td>{{detailsData.updateTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>操作人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.createId)">{{detailsData.createName}}</a></td>
+                    </tr>
+                    <tr>
+                        <td>更新人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.updateId)">{{detailsData.updateName}}</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.detailsVisible = false">关闭</el-button>
+        </div>
+    </el-dialog>
+    <div th:replace="common/component :: exportDialog"></div>
+    <div th:replace="common/component :: userInfo"></div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/config/config.js}"></script>
+</body>
+</html>

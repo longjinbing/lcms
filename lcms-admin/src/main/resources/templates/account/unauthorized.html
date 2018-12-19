@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="lib/css :: css(~{::title},~{})">
+<title>异常信息</title>
+</head>
+<body>
+	<div id="main">
+
+		<div class="message-box">
+			<p class="message-text"><span class="message-error-icon">&#xea0c</span>{{message}}</p>
+			<a class="message-button" th:href="@{/login}">即将跳转至登录页面</a>
+		</div>
+
+	</div>
+
+	<div th:include="lib/js :: js"></div>
+	<script type="text/javascript">
+	var vue=new Vue({
+		el:'#main',
+		data:{
+			message :'[[${message}]]'
+		},
+		created:function(){
+		    setTimeout(function(){
+				top.location.href=transUrl("/account/login");
+			},3000);
+		}
+	});
+
+	</script>
+</body>
+
+</html>

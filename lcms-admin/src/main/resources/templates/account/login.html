@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="lib/css :: css(~{::title},~{::link})">
+    <title>用户登录</title>
+    <link rel="stylesheet" th:href="@{/static/account/login.css}">
+</head>
+<body>
+<div id="main" class="main" v-cloak>
+    <div class="main-bg">
+        <img th:src="@{/static/common/images/login-bg.jpg}">
+    </div>
+    <el-row type="flex" justify="center">
+        <el-col class="login" :span="6" v-loading="formLoading">
+            <h3 class="login-title"><span>用户登录</span>
+                <small>Login User</small>
+            </h3>
+            <h5 class="login-description"><i></i><b>欢迎登录后台管理系统</b><i></i></h5>
+            <el-form :model="user" :rules="rules" ref="loginForm" label-width="0" :show-message="false">
+                <el-form-item prop="username">
+                    <el-input type="text" v-model.number="user.username"
+                              prefix-icon="icon-profile-male icon-user" placeholder="用户名"></el-input>
+                </el-form-item>
+                <el-form-item prop="password">
+                    <el-input type="password" v-model.number="user.password"
+                              prefix-icon="icon-lock2 icon-password" suffix-icon="icon-forgetpassword" placeholder="密码"></el-input>
+                </el-form-item>
+                <el-form-item prop="kaptcha">
+                    <el-col :span="12">
+                        <el-input type="text" v-model.number="user.kaptcha" placeholder="验证码"></el-input>
+                    </el-col>
+                    <el-col :span="12" type="flex" jsutify="end"><kaptcha-code ref="kapcher" :key.sync="kaptchaKey"></kaptcha-code></el-col>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @keyup.enter.native="login('loginForm')" @click="login('loginForm')" class="fill">登录</el-button>
+                </el-form-item>
+                <div id="check-result" style="height:30px;color: red;font-size: 12px" ref="checkResult"></div>
+            </el-form>
+        </el-col>
+    </el-row>
+</div>
+    <div class="copyright">江西中医药大学计算机学院 版权所有©2016-2026</div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/account/login.js}"></script>
+</body>
+</html>

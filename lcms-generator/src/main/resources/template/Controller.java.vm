@@ -1,0 +1,100 @@
+package ${package}.controller;
+
+import java.util.*;
+import com.ljb.annotion.*;
+import com.ljb.model.*;
+import com.ljb.utils.*;
+import com.ljb.Base.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import javax.validation.constraints.NotNull;
+import org.springframework.validation.annotation.Validated;
+import javax.servlet.http.HttpServletResponse;
+import com.alibaba.fastjson.JSONObject;
+import ${package}.entity.${entityName};
+import ${package}.service.${entityName}Service;
+
+/**
+ * ${comment}Controller
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+
+@RestController
+@RequestMapping("${module}/${pathName}")
+@MenuDescription(group="${menuName}",name="${comment}", action ="${module}/${pathName}.html")
+public class ${entityName}Controller extends BaseController {
+    @Autowired
+    private ${entityName}Service ${variableName}Service;
+
+    /**
+     * 查看列表
+     */
+    @RequestMapping("/list")
+    @MenuDescription(name="${comment}列表")
+    public R list(@RequestParam Map<String, Object> params) {
+        //查询列表数据
+        return R.ok().put( ${variableName}Service.selectList(params));
+    }
+
+    /**
+     * 查看信息
+     */
+    @RequestMapping("/{${pk.columnName}}")
+    @MenuDescription(name="查看${comment}")
+    public R info(@NotNull @PathVariable("${pk.columnName}") ${pk.dataType} ${pk.columnName}) {
+        ${entityName} ${variableName}  = ${variableName}Service.selectById(${pk.columnName});
+        return R.ok().put( BeanUtils.filteBean(${variableName}));
+    }
+
+    /**
+     * 查看详细信息
+     */
+    @RequestMapping("/details/{${pk.columnName}}")
+    @MenuDescription(name="${comment}详情")
+    public R details(@NotNull @PathVariable("${pk.columnName}") ${pk.dataType} ${pk.columnName}) {
+        Map<String,Object> ${variableName}  = ${variableName}Service.selectMapById(${pk.columnName});
+        return R.ok().put( ${variableName});
+    }
+
+    /**
+     * 保存
+     */
+    @RequestMapping("/save")
+    @MenuDescription(name="添加${comment}")
+    public R save(@Validated(AddGroup.class) @RequestBody ${entityName} ${variableName}) {
+        ${variableName}Service.save(${variableName});
+        return R.ok();
+    }
+
+    /**
+     * 修改
+     */
+    @RequestMapping("/update")
+    @MenuDescription(name="修改${comment}")
+    public R update(@Validated(UpdateGroup.class) @RequestBody ${entityName} ${variableName}) {
+        ${variableName}Service.update(${variableName});
+        return R.ok();
+    }
+
+    /**
+     * 删除
+     */
+    @RequestMapping("/delete")
+    @MenuDescription(name="删除${comment}")
+    public R delete(@NotNull @RequestBody List<${pk.dataType}> ${pk.columnName}s) {
+        ${variableName}Service.deleteBatch(${pk.columnName}s);
+        return R.ok();
+    }
+
+    /**
+     * 查看所有列表
+     */
+    @RequestMapping("/export")
+    @MenuDescription(name="${comment}导出")
+    public void queryAll(@RequestBody JSONObject jsonObject, HttpServletResponse response) {
+        ${variableName}Service.export(jsonObject,response);
+    }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>授权</title>
+</head>
+<body>
+<div id="main">
+    <div class="authorize-box">
+        <p class="authorize-title">您即将授权给<a class="authorize-target" th:text="${clientId}"></a>，请确认</p>
+        <div class="authorize-button-wrap">
+            <div class="authorize-button approve">
+                <form name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
+                    <input name="user_oauth_approval" value="true" type="hidden">
+                    <input type="hidden" class="input-hidden" name="scope.test" value="true">
+                    <button type="submit" class="btn btn-success center-block">同意/授权</button>
+                </form>
+            </div>
+            <div  class="authorize-button deny">
+                <form name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
+                    <input name="user_oauth_approval" value="true" type="hidden">
+                    <input type="hidden" class="input-hidden" name="scope.test" value="false">
+                    <button type="submit" class="btn btn-danger center-block">取消</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .authorize-box {
+        width: 400px;
+        height: 300px;
+        position: absolute;
+        left: 50%;
+        top: 40%;
+        margin-left: -200px;
+        margin-top: -150px;
+        border: #e1e1e1 1px solid;
+        border-radius: 5px;
+        padding: 70px 20px;
+background: #f6f6f6;
+    }
+    .center-block{
+        width: 100%;
+    }
+    .authorize-title{
+        font-size: 18px;
+        font-weight: 300;
+        font-family: 微软雅黑;
+        text-align: center;
+    }
+    .authorize-target{
+        font-size: 18px;
+    }
+    .authorize-button-wrap{
+        width: 250px;
+        margin: 50px auto;
+    }
+    .authorize-button{
+        width:100px;
+    }
+    .approve{
+        float: left;
+    }
+    .deny{
+        float: right;
+    }
+</style>
+<div th:include="lib/js :: js"></div>
+</body>
+</html>

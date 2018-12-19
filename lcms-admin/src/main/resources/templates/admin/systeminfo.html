@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="lib/css :: css(~{::title},~{::link})">
+    <title>系统</title>
+    <link rel="stylesheet" th:href="@{/static/admin/systeminfo.css}">
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-row class="information">
+        <el-col :span="12">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span><b class="icon-moon information-icon">&#xe9c0</b>事项</span>
+                    <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+                </div>
+                <h4 v-if="tasklist.length == 0" class="content-null-title">暂无事项</h4>
+                <ul v-for="item in tasklist">
+                    <li></li>
+                </ul>
+            </el-card>
+        </el-col>
+        <el-col :span="12">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span><b class="icon-moon information-icon">&#xe9c2</b>公告</span>
+                    <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+                </div>
+                <h4 v-if="tasklist.length == 0" class="content-null-title">暂无公告</h4>
+                <ul v-for="item in tasklist">
+                    <li></li>
+                </ul>
+            </el-card>
+        </el-col>
+    </el-row>
+    <el-row class="system">
+        <el-col :span="6">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span><b class="icon-moon system-icon">&#xe99b</b>软件信息</span>
+                </div>
+                <table class="system-table" rules="none">
+                    <tbody>
+                    <tr>
+                        <td>操作系统:</td>
+                        <td>{{soft.osName}}</td>
+                    </tr>
+                    <tr>
+                        <td>系统版本:</td>
+                        <td>{{soft.version}}</td>
+                    </tr>
+                    <tr>
+                        <td>JDK版本:</td>
+                        <td>{{soft.jdkVersion}}</td>
+                    </tr>
+                    <tr>
+                        <td>平台信息:</td>
+                        <td>{{soft.server}}</td>
+                    </tr>
+                    <tr>
+                        <td>缓存信息:</td>
+                        <td>{{soft.cache}}</td>
+                    </tr>
+                    <tr>
+                        <td>运行时长:</td>
+                        <td>{{soft.runtime}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-card>
+        </el-col>
+        <el-col :span="6">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span><b class="icon-moon system-icon">&#xe9a4</b>内存信息</span>
+                </div>
+                <table class="system-table" rules="none">
+                    <tbody>
+                    <tr>
+                        <td>内存容量:</td>
+                        <td>{{dram.maxMemory}}</td>
+                    </tr>
+                    <tr>
+                        <td>可用容量:</td>
+                        <td>{{dram.totalMemory}}</td>
+                    </tr>
+                    <tr>
+                        <td>剩余容量:</td>
+                        <td>{{dram.freeMemory}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button @click="clear" class="clear-dram-button"><b class="icon-moon clear-icon">&#xe9b4</b>内存清理
+                </button>
+            </el-card>
+        </el-col>
+        <el-col :span="6">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span><b class="icon-moon system-icon">&#xe9b4</b>CPU信息</span>
+                </div>
+                <div id="cpu-info" class="cpu-info"></div>
+            </el-card>
+        </el-col>
+        <el-col :span="6">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span><b class="icon-moon system-icon">&#xe9aa</b>磁盘信息</span>
+                </div>
+                <table class="system-table" rules="none">
+                    <tbody>
+                    <tr>
+                        <td>磁盘容量:</td>
+                        <td>{{disk.totalMemory}}</td>
+                    </tr>
+                    <tr>
+                        <td>已用容量:</td>
+                        <td>{{disk.usageMemory}}</td>
+                    </tr>
+                    <tr>
+                        <td>可用容量:</td>
+                        <td>{{disk.freeMemory}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button class="clear-dram-button" @click="clear"><b class="icon-moon clear-icon">&#xe9b4</b>磁盘清理
+                </button>
+            </el-card>
+        </el-col>
+    </el-row>
+</div>
+<div th:include="lib/js :: js"></div>
+<div th:include="lib/echarts :: js"></div>
+<script th:src="@{/static/admin/systeminfo.js}"></script>
+</body>
+</html>

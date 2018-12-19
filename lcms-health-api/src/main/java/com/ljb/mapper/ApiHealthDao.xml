@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljb.dao.ApiHealthDao">
+
+    <select id="questionList" resultType="map">
+        SELECT
+        t.`id` , t.`question` as content
+        FROM health_test_question t
+        where t.`status`=1   and t.`is_delete`=1
+    </select>
+
+    <select id="selectList" resultType="map">
+        SELECT
+        t.`health_id` as healthId , t.`id` as id
+        FROM health_test_question t
+        where t.`status`=1   and t.`is_delete`=1
+    </select>
+
+    <select id="categoryById" parameterType="long" resultMap="categoryMap">
+        SELECT
+        t.`id` , t.`name` ,t.`remark`
+        FROM health_category t
+        WHERE  t.`id`=#{id}
+    </select>
+
+    <resultMap id="categoryMap" type="map">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="remark" column="remark" />
+        <collection property="description" column="id" ofType="map" select="attributeList"/>
+    </resultMap>
+
+    <select id="attributeList" resultType="map">
+        select name,content from health_attribute where health_id=#{id}
+    </select>
+
+    <select id="categoryList" resultType="map">
+        SELECT
+        t.`id` , t.`name`
+        FROM health_category t
+        where t.`status`=1   and t.`is_delete`=1
+    </select>
+
+</mapper>

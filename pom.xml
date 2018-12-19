@@ -17,6 +17,13 @@
         <module>lcms-admin</module>
         <module>lcms-generator</module>
         <module>lcms-sso</module>
+        <module>lcms-kaptcha</module>
+        <module>lcms-cms</module>
+        <module>lcms-shop</module>
+        <module>lcms-health</module>
+        <module>lcms-health-api</module>
+        <module>lcms-cms-api</module>
+        <module>lcms-shop-api</module>
     </modules>
     <repositories>
         <repository>
@@ -63,12 +70,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>kaptcha-spring-boot-starter</artifactId>
-            <version>1.0.0</version>
         </dependency>
 
         <dependency>

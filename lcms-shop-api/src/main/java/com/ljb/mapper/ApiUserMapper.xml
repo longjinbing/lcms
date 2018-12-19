@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljb.dao.ApiUserDao">
+    <update id="updateByIdSelective" parameterType="com.ljb.entity.ApiUser">
+        update shop_user
+        <set>
+                                                                            <if test="username != null">
+                        `username` = #{username},
+                                        </if>
+                                                                <if test="password != null">
+                        `password` = #{password},
+                                        </if>
+                                                                <if test="gender != null">
+                        `gender` = #{gender},
+                                        </if>
+                                                                <if test="birthday != null">
+                        `birthday` = #{birthday},
+                                        </if>
+                                                                <if test="registerTime != null">
+                        `register_time` = #{registerTime},
+                                        </if>
+                                                                <if test="lastLoginTime != null">
+                        `last_login_time` = #{lastLoginTime},
+                                        </if>
+                                                                <if test="lastLoginIp != null">
+                        `last_login_ip` = #{lastLoginIp},
+                                        </if>
+                                                                <if test="userLevelId != null">
+                        `user_level_id` = #{userLevelId},
+                                        </if>
+                                                                <if test="nickname != null">
+                        `nickname` = #{nickname},
+                                        </if>
+                                                                <if test="mobile != null">
+                        `mobile` = #{mobile},
+                                        </if>
+                                                                <if test="registerIp != null">
+                        `register_ip` = #{registerIp},
+                                        </if>
+                                                                <if test="avatar != null">
+                        `avatar` = #{avatar},
+                                        </if>
+                                                                <if test="weixinOpenid != null">
+                        `weixin_openid` = #{weixinOpenid},
+                                        </if>
+                                                                <if test="isDelete != null">
+                        `is_delete` = #{isDelete},
+                                        </if>
+                                                                <if test="status != null">
+                        `status` = #{status},
+                                        </if>
+                                                                <if test="createId != null">
+                        `create_id` = #{createId},
+                                        </if>
+                                                                <if test="createTime != null">
+                        `create_time` = #{createTime},
+                                        </if>
+                                                                <if test="updateId != null">
+                        `update_id` = #{updateId},
+                                        </if>
+                                                                <if test="updateTime != null">
+                        `update_time` = #{updateTime}                    </if>
+                                    </set>
+        where id = #{id}
+    </update>
+    <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO shop_user
+        (
+                                    `id` ,
+                                                            `username` ,
+                                                            `password` ,
+                                                            `gender` ,
+                                                            `birthday` ,
+                                                            `register_time` ,
+                                                            `last_login_time` ,
+                                                            `last_login_ip` ,
+                                                            `user_level_id` ,
+                                                            `nickname` ,
+                                                            `mobile` ,
+                                                            `register_ip` ,
+                                                            `avatar` ,
+                                                            `weixin_openid` ,
+                                                            `is_delete` ,
+                                                            `status` ,
+                                                            `create_id` ,
+                                                            `create_time` ,
+                                                            `update_id` ,
+                                                            `update_time`                             )
+        values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (
+                                                #{item.id},
+                                                                                #{item.username},
+                                                                                #{item.password},
+                                                                                #{item.gender},
+                                                                                #{item.birthday},
+                                                                                #{item.registerTime},
+                                                                                #{item.lastLoginTime},
+                                                                                #{item.lastLoginIp},
+                                                                                #{item.userLevelId},
+                                                                                #{item.nickname},
+                                                                                #{item.mobile},
+                                                                                #{item.registerIp},
+                                                                                #{item.avatar},
+                                                                                #{item.weixinOpenid},
+                                                                                #{item.isDelete},
+                                                                                #{item.status},
+                                                                                #{item.createId},
+                                                                                #{item.createTime},
+                                                                                #{item.updateId},
+                                                                                #{item.updateTime}                                        )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="java.util.List">>
+        <foreach item="item" index="index" collection="list" separator=";">
+            update shop_user
+            <set>
+                                                            <if test="item.id != null">`id` =
+                            #{item.id} ,  </if>
+                                                                 <if test="item.username != null">`username` =
+                            #{item.username} ,  </if>
+                                                                 <if test="item.password != null">`password` =
+                            #{item.password} ,  </if>
+                                                                 <if test="item.gender != null">`gender` =
+                            #{item.gender} ,  </if>
+                                                                 <if test="item.birthday != null">`birthday` =
+                            #{item.birthday} ,  </if>
+                                                                 <if test="item.registerTime != null">`register_time` =
+                            #{item.registerTime} ,  </if>
+                                                                 <if test="item.lastLoginTime != null">`last_login_time` =
+                            #{item.lastLoginTime} ,  </if>
+                                                                 <if test="item.lastLoginIp != null">`last_login_ip` =
+                            #{item.lastLoginIp} ,  </if>
+                                                                 <if test="item.userLevelId != null">`user_level_id` =
+                            #{item.userLevelId} ,  </if>
+                                                                 <if test="item.nickname != null">`nickname` =
+                            #{item.nickname} ,  </if>
+                                                                 <if test="item.mobile != null">`mobile` =
+                            #{item.mobile} ,  </if>
+                                                                 <if test="item.registerIp != null">`register_ip` =
+                            #{item.registerIp} ,  </if>
+                                                                 <if test="item.avatar != null">`avatar` =
+                            #{item.avatar} ,  </if>
+                                                                 <if test="item.weixinOpenid != null">`weixin_openid` =
+                            #{item.weixinOpenid} ,  </if>
+                                                                 <if test="item.isDelete != null">`is_delete` =
+                            #{item.isDelete} ,  </if>
+                                                                 <if test="item.status != null">`status` =
+                            #{item.status} ,  </if>
+                                                                 <if test="item.createId != null">`create_id` =
+                            #{item.createId} ,  </if>
+                                                                 <if test="item.createTime != null">`create_time` =
+                            #{item.createTime} ,  </if>
+                                                                 <if test="item.updateId != null">`update_id` =
+                            #{item.updateId} ,  </if>
+                                                                 <if test="item.updateTime != null">`update_time` =
+                            #{item.updateTime}  </if>
+                                 </set>
+            where `id` = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectMapById" resultMap="DetailsMap">
+        SELECT
+                t.`id` ,            t.`username` ,            t.`password` ,            t.`gender` ,            t.`birthday` ,            t.`register_time` ,            t.`last_login_time` ,            t.`last_login_ip` ,            t.`user_level_id` ,            t.`nickname` ,            t.`mobile` ,            t.`register_ip` ,            t.`avatar` ,            t.`weixin_openid` ,            t.`is_delete` ,            t.`status` ,            t.`create_id` ,            t.`create_time` ,            t.`update_id` ,            t.`update_time`                     ,s.`username` as createName,
+        s2.`username` as updateName
+        FROM shop_user t left join sys_user s on s.`id`= t.`create_id` LEFT JOIN sys_user s2 ON s2.`id`=t.`update_id`
+                 WHERE
+                 t.`is_delete`=1 and
+                  t.`id`=#{id}
+    </select>
+
+    <select id="selectMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+                    t.`id` ,                    t.`username` ,                    t.`password` ,                    t.`gender` ,                    t.`birthday` ,                    t.`register_time` ,                    t.`last_login_time` ,                    t.`last_login_ip` ,                    t.`user_level_id` ,                    t.`nickname` ,                    t.`mobile` ,                    t.`register_ip` ,                    t.`avatar` ,                    t.`weixin_openid` ,                    t.`is_delete` ,                    t.`status` ,                    t.`create_id` ,                    t.`create_time` ,                    t.`update_id` ,                    t.`update_time`                             ,s.`username` as updateName
+            FROM shop_user t left join sys_user s on s.`id`= t.`update_id`
+                <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+                            <if test="stime != null and etime != null">
+                    and t.`create_time` BETWEEN #{stime} AND #{etime}
+                </if>
+                                        <if test=" offset != null ">
+                    and t.`is_delete`=1
+                </if>
+                    </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+                    <if test="offset != null and limit != null">
+                LIMIT ${offset}, ${limit}
+            </if>
+            </select>
+
+    <select id="selectTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_user
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+                            <if test=" offset != null ">
+                    and `is_delete`=1
+                </if>
+                    </where>
+    </select>
+
+    <select id="recyleMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+                    t.`id` ,                    t.`username` ,                    t.`password` ,                    t.`gender` ,                    t.`birthday` ,                    t.`register_time` ,                    t.`last_login_time` ,                    t.`last_login_ip` ,                    t.`user_level_id` ,                    t.`nickname` ,                    t.`mobile` ,                    t.`register_ip` ,                    t.`avatar` ,                    t.`weixin_openid` ,                    t.`is_delete` ,                    t.`status` ,                    t.`create_id` ,                    t.`create_time` ,                    t.`update_id` ,                    t.`update_time`                             ,s.`username` as updateName
+            FROM shop_user t left join sys_user s on s.`id`= t.`update_id`
+                <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+                            <if test="stime != null and etime != null">
+                    and t.`create_time` BETWEEN #{stime} AND #{etime}
+                </if>
+                                        <if test=" offset != null ">
+                    and t.`is_delete`=0
+                </if>
+                    </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+                    <if test="offset != null and limit != null">
+                LIMIT ${offset}, ${limit}
+            </if>
+            </select>
+
+    <select id="recyleTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_user
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+                            <if test=" offset != null ">
+                    and `is_delete`=0
+                </if>
+                    </where>
+    </select>
+
+    <delete id="physicsDeleteBatch">
+        delete from shop_user where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="emptyRecyle">
+        delete from shop_user where is_delete=0
+    </delete>
+
+    <delete id="deleteBatch">
+                    update shop_user set t.`is_delete`=0
+                where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <resultMap type="map" id="DetailsMap">
+                    <result property="id" column="id"/>
+                    <result property="username" column="username"/>
+                    <result property="password" column="password"/>
+                    <result property="gender" column="gender"/>
+                    <result property="birthday" column="birthday"/>
+                    <result property="registerTime" column="register_time"/>
+                    <result property="lastLoginTime" column="last_login_time"/>
+                    <result property="lastLoginIp" column="last_login_ip"/>
+                    <result property="userLevelId" column="user_level_id"/>
+                    <result property="nickname" column="nickname"/>
+                    <result property="mobile" column="mobile"/>
+                    <result property="registerIp" column="register_ip"/>
+                    <result property="avatar" column="avatar"/>
+                    <result property="weixinOpenid" column="weixin_openid"/>
+                    <result property="isDelete" column="is_delete"/>
+                    <result property="status" column="status"/>
+                    <result property="createId" column="create_id"/>
+                    <result property="createTime" column="create_time"/>
+                    <result property="updateId" column="update_id"/>
+                    <result property="updateTime" column="update_time"/>
+                            <result property="updateName" column="updateName"/>
+            <result property="createName" column="createName"/>
+            </resultMap>
+
+    <resultMap type="map" id="listResultMap">
+        <result property="id" column="id"/>
+                    <result property="username" column="username"/>
+                    <result property="password" column="password"/>
+                    <result property="gender" column="gender"/>
+                    <result property="birthday" column="birthday"/>
+                    <result property="registerTime" column="register_time"/>
+                    <result property="lastLoginTime" column="last_login_time"/>
+                    <result property="lastLoginIp" column="last_login_ip"/>
+                    <result property="userLevelId" column="user_level_id"/>
+                    <result property="nickname" column="nickname"/>
+                    <result property="mobile" column="mobile"/>
+                    <result property="registerIp" column="register_ip"/>
+                    <result property="avatar" column="avatar"/>
+                    <result property="weixinOpenid" column="weixin_openid"/>
+                    <result property="status" column="status"/>
+                    <result property="updateTime" column="update_time"/>
+                    <result property="updateName" column="updateName"/>
+            </resultMap>
+
+    <resultMap type="com.ljb.entity.ApiUser" id="BaseResultMap">
+                    <result property="id" column="id"/>
+                    <result property="username" column="username"/>
+                    <result property="password" column="password"/>
+                    <result property="gender" column="gender"/>
+                    <result property="birthday" column="birthday"/>
+                    <result property="registerTime" column="register_time"/>
+                    <result property="lastLoginTime" column="last_login_time"/>
+                    <result property="lastLoginIp" column="last_login_ip"/>
+                    <result property="userLevelId" column="user_level_id"/>
+                    <result property="nickname" column="nickname"/>
+                    <result property="mobile" column="mobile"/>
+                    <result property="registerIp" column="register_ip"/>
+                    <result property="avatar" column="avatar"/>
+                    <result property="weixinOpenid" column="weixin_openid"/>
+                    <result property="isDelete" column="is_delete"/>
+                    <result property="status" column="status"/>
+                    <result property="createId" column="create_id"/>
+                    <result property="createTime" column="create_time"/>
+                    <result property="updateId" column="update_id"/>
+                    <result property="updateTime" column="update_time"/>
+            </resultMap>
+
+    <sql id="Base_Column_List">
+	    `id`,    	    `username`,    	    `password`,    	    `gender`,    	    `birthday`,    	    `register_time`,    	    `last_login_time`,    	    `last_login_ip`,    	    `user_level_id`,    	    `nickname`,    	    `mobile`,    	    `register_ip`,    	    `avatar`,    	    `weixin_openid`,    	    `is_delete`,    	    `status`,    	    `create_id`,    	    `create_time`,    	    `update_id`,    	    `update_time`      	</sql>
+
+</mapper>

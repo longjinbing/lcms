@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>系统日志管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-row class="toolbar">
+        <el-col :span="5">
+            <el-input placeholder="请输入内容" v-model="queryParams.text" size="medium" class="input-with-select">
+                <el-select v-model="queryParams.field" slot="prepend" placeholder="请选择">
+                                            <el-option label="用户操作" value="operation"></el-option>
+                                            <el-option label="请求方法" value="method"></el-option>
+                                            <el-option label="请求参数" value="params"></el-option>
+                                            <el-option label="IP地址" value="ip"></el-option>
+                                            <el-option label="URL" value="url"></el-option>
+                                            <el-option label="备注" value="remark"></el-option>
+                                            <el-option label="级别" value="level"></el-option>
+                                            <el-option label="错误堆栈信息" value="errorStack"></el-option>
+                                    </el-select>
+                <el-button slot="append" @click="loadData" icon="el-icon-search"></el-button>
+            </el-input>
+        </el-col>
+        <el-col :span="5" :offset="1">
+            <el-button type="success" @click="visible.addFormVisible = true" size="medium"><i
+                    class="el-icon-plus">新增</i></el-button>
+            <el-button type="danger" @click="deleteData" size="medium"><i class="el-icon-delete"></i>删除</el-button>
+        </el-col>
+        <div th:replace="common/component :: toolbar"></div>
+    </el-row>
+    <el-row class="data">
+        <el-table size="mini"
+                  border
+                  v-loading="tableLoading"
+                  @selection-change="selectedChange"
+                  :data="tableData" :default-sort="{prop: 'id', order: 'desc'}"
+                  @sort-change="sortChange"
+                  style="width: 100%">
+            <el-table-column
+                    type="selection"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    type="index"
+                    width="50"
+                    label="序号"
+                    :index="generatorIndex">
+            </el-table-column>
+                                                <el-table-column
+                            prop="operation"
+                            label="用户操作">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="method"
+                            label="请求方法">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="params"
+                            label="请求参数">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="ip"
+                            label="IP地址">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="updateTime"
+                            label="操作时间"
+                            sortable="custom"
+                            width="150">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="url"
+                            label="URL">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="remark"
+                            label="备注">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="level"
+                            label="级别">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="errorStack"
+                            label="错误堆栈信息">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="status"
+                            label="状态"
+                            width="60">
+                        <template slot-scope="scope">
+                            <el-tag
+                                    size="mini" :type="tagTypeList[scope.row.status]">
+                                {{statusList[scope.row.status]}}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="updateName"
+                            label="操作人">
+                    </el-table-column>
+                                        <el-table-column width="150"
+                             label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini" type="success"
+                            @click="updateDialogOpen(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini" type="info"
+                            @click="detailsDialogOpen(scope.$index, scope.row)">详情
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+            <div th:replace="common/component :: pagination"></div>
+        <el-dialog top="4vh" title="新增" :modal="false" :open="addDialogOpen" :visible.sync="visible.addFormVisible">
+        <el-form v-loading="formLoading" :rules="addRules" ref="addForm" :model="addFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                                                                                                        <el-form-item label="用户操作" prop="operation">
+                                    <el-input v-model="addFormData.operation"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="请求方法" prop="method">
+                                    <el-input v-model="addFormData.method"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="请求参数" prop="params">
+                                    <el-input v-model="addFormData.params"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="IP地址" prop="ip">
+                                    <el-input v-model="addFormData.ip"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="URL" prop="url">
+                                    <el-input v-model="addFormData.url"></el-input>
+                                </el-form-item>
+                                                                                                                                                                                                                                                                        </el-col>
+                <el-col :span="12">
+                                                                                                                                                                                                                                                                                                                                    <el-form-item label="备注" prop="remark">
+                                    <el-input v-model="addFormData.remark"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="级别" prop="level">
+                                    <el-input v-model="addFormData.level"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="错误堆栈信息" prop="errorStack">
+                                    <el-input v-model="addFormData.errorStack"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="状态">
+                                    <el-radio-group v-model="addFormData.status" size="medium">
+                                        <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                                         size="medium">{{item}}</el-radio-button>
+                                    </el-radio-group>
+                                </el-form-item>
+                                                                                        </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.addFormVisible = false">取 消</el-button>
+            <el-button @click="resetForm('addForm')">重置</el-button>
+            <el-button type="primary" @click="saveFormData('addForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="修改" :modal="false" :visible.sync="visible.editFormVisible">
+        <el-form v-loading="formLoading" ref="editForm" :rules="addRules" :model="editFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                                                                                                        <el-form-item label="用户操作" prop="operation">
+                                    <el-input v-model="editFormData.operation"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="请求方法" prop="method">
+                                    <el-input v-model="editFormData.method"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="请求参数" prop="params">
+                                    <el-input v-model="editFormData.params"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="IP地址" prop="ip">
+                                    <el-input v-model="editFormData.ip"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="URL" prop="url">
+                                    <el-input v-model="editFormData.url"></el-input>
+                                </el-form-item>
+                                                                                                                                                                                                                                                                        </el-col>
+                <el-col :span="12">
+                                                                                                                                                                                                                                                                                                                                    <el-form-item label="备注" prop="remark">
+                                    <el-input v-model="editFormData.remark"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="级别" prop="level">
+                                    <el-input v-model="editFormData.level"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="错误堆栈信息" prop="errorStack">
+                                    <el-input v-model="editFormData.errorStack"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="状态">
+                                    <el-radio-group v-model="editFormData.status" size="medium">
+                                        <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                                         size="medium">{{item}}</el-radio-button>
+                                    </el-radio-group>
+                                </el-form-item>
+                                                                                        </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.editFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateFormData('editForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="详情" :modal="false" :visible.sync="visible.detailsVisible">
+        <el-row v-loading="formLoading">
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                                                                                <tr>
+                                <td>用户操作:</td>
+                                <td>{{detailsData.operation}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>请求方法:</td>
+                                <td>{{detailsData.method}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>请求参数:</td>
+                                <td>{{detailsData.params}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>IP地址:</td>
+                                <td>{{detailsData.ip}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>发生时间:</td>
+                                <td>{{detailsData.createTime}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>操作时间:</td>
+                                <td>{{detailsData.updateTime}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>URL:</td>
+                                <td>{{detailsData.url}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>备注:</td>
+                                <td>{{detailsData.remark}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>级别:</td>
+                                <td>{{detailsData.level}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>错误堆栈信息:</td>
+                                <td>{{detailsData.errorStack}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>状态:</td>
+                                <td>
+                                    <el-tag size="mini" :type="tagTypeList[detailsData.status]">
+                                        {{statusList[detailsData.status]}}
+                                    </el-tag>
+                                </td>
+                            </tr>
+                                                                        </tbody>
+                </table>
+            </el-col>
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                                                <tr>
+                            <td>操作人:</td>
+                            <td><a class="m-link"
+                                   @click="queryUserInfo(detailsData.createId)">{{detailsData.createName}}</a></td>
+                        </tr>
+                        <tr>
+                            <td>更新人:</td>
+                            <td><a class="m-link"
+                                   @click="queryUserInfo(detailsData.updateId)">{{detailsData.updateName}}</a></td>
+                        </tr>
+                                            </tbody>
+                </table>
+            </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.detailsVisible = false">关闭</el-button>
+        </div>
+    </el-dialog>
+    <div th:replace="common/component :: exportDialog"></div>
+    <div th:replace="common/component :: userInfo"></div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/logs/log.js}"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>商品分类管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-form v-loading="formLoading" :rules="addRules" ref="addForm" :model="addFormData" label-width="80px"
+             size="medium" hide-required-asterisk>
+        <input id="categoryId" type="text" class="input-hidden" th:value="${categoryId}">
+        <input id="parentId" type="text" class="input-hidden" v-model="addFormData.parentId" th:value="${parentId}">
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model="addFormData.name" placeholder="名称"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="关键字" prop="keywords">
+                    <el-input v-model="addFormData.keywords" placeholder="关键字"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="24">
+                <el-form-item label="介绍" prop="frontDesc">
+                    <el-input type="textarea" :row="4" v-model="addFormData.frontDesc" placeholder="介绍"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="轮播图片" prop="bannerUrl">
+                    <upload-image v-model="addFormData.bannerUrl" :image.sync="addFormData.bannerUrl"></upload-image>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="app图片" prop="wapBannerUrl">
+                    <upload-image v-model="addFormData.wapBannerUrl"
+                                  :image.sync="addFormData.wapBannerUrl"></upload-image>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="图片" prop="imgUrl">
+                    <upload-image v-model="addFormData.imgUrl" :image.sync="addFormData.imgUrl"></upload-image>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="app图片" prop="wapBannerUrl">
+                    <upload-image v-model="addFormData.wapBannerUrl"
+                                  :image.sync="addFormData.wapBannerUrl"></upload-image>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+                <el-form-item label="状态">
+                    <el-radio-group v-model="addFormData.status" size="medium">
+                        <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                         size="medium">{{item}}
+                        </el-radio-button>
+                    </el-radio-group>
+                </el-form-item>
+        </el-row>
+    </el-form>
+    <el-row type="flex" justify="center">
+        <el-button @click="returnParentTab">返回</el-button>
+        <el-button type="primary" @click="saveFormData('addForm')">确 定</el-button>
+    </el-row>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/goods/editgoodscategory.js}"></script>
+</body>
+</html>

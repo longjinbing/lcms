@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<el-col th:fragment="toolbar" :span="13">
+    <el-col :span="6">
+        <el-date-picker size="medium" type="date" value-format="yyyy-MM-dd" placeholder="开始日期"
+                        v-model="queryParams.stime" style="width: 100%;"></el-date-picker>
+    </el-col>
+    <el-col class="line" :span="1">-</el-col>
+    <el-col :span="6">
+        <el-date-picker size="medium" type="date" value-format="yyyy-MM-dd" placeholder="结束日期"
+                        v-model="queryParams.etime" style="width: 100%;"></el-date-picker>
+    </el-col>
+    <el-col :span="11">
+        <el-button @click="loadData" size="medium"><i class="el-icon-search"></i></el-button>
+        <el-button type="warning" @click="exportOpen" size="medium"><i class="el-icon-download"></i>导出</el-button>
+        <el-button type="primary" @click="loadData" size="medium"><i class="el-icon-refresh"></i>刷新</el-button>
+    </el-col>
+</el-col>
+
+<template th:fragment="sortbar"  slot-scope="scope">
+    <el-tag class="sort-icon" size="mini" @click.native="sortTop(scope.$index, scope.row)" type="danger">置顶</el-tag>
+    <el-tag class="sort-icon" size="mini" @click.native="sortUp(scope.$index, scope.row)"  type="success">上移</el-tag>
+    <el-tag class="sort-icon" size="mini" @click.native="sortDown(scope.$index, scope.row)"  type="primary">下移</el-tag>
+</template>
+
+<template th:fragment="treeColumn" slot-scope="scope">
+    <span class="tree-table-space" v-for="item in scope.row.level"></span>
+    <i v-if="scope.row.children ==undefined || scope.row.children.length == 0"  class="expand-icon"></i>
+    <i @click="expandColumn(scope.$index,scope.row)" v-if="scope.row.children !=undefined && scope.row.children.length > 0"  class="expand-icon" :class="{'el-icon-plus':!scope.row.expand,'el-icon-minus':scope.row.expand}" ></i>
+    <span>{{scope.row.name}}</span>
+</template>
+
+<el-row th:fragment="pagination" type="flex" justify="end">
+    <el-pagination
+            background
+            @size-change="sizeChange"
+            @current-change="pageChange"
+            :current-page="queryParams.current"
+            :prev-click="pageChange"
+            :next-click="pageChange"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="queryParams.limit"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="queryParams.total">
+    </el-pagination>
+</el-row>
+
+<el-dialog top="4vh" th:fragment="exportDialog" title="导出数据" :modal="false" :visible.sync="visible.exportVisible" center>
+    <el-row type="flex" justify="center"><el-col :span="18">
+        <el-transfer v-model="selectedFields" :titles="['可选择导出列', '已选择导出列']" :data="displayFields" :right-default-checked="selectedFields"></el-transfer>
+    </el-col>
+    </el-row>
+    <div slot="footer" class="dialog-footer">
+        <el-button @click="visible.exportVisible = false">关闭</el-button>
+        <el-button type="primary" @click="exportData">导出</el-button>
+    </div>
+</el-dialog>
+
+<el-dialog th:fragment="userInfo" title="用户信息" :modal="false" :visible.sync="visible.userInfoVisible">
+    <el-row v-loading="formLoading">
+        <el-col :span="12" :offset="6">
+            <table class="details-table">
+                <tbody>
+                <tr>
+                    <td>识别码:</td>
+                    <td>{{userInfo.number}}</td>
+                </tr>
+                <tr>
+                    <td>用户名:</td>
+                    <td>{{userInfo.username}}</td>
+                </tr>
+                <tr>
+                    <td>手机号:</td>
+                    <td>{{userInfo.phone}}</td>
+                </tr>
+                <tr>
+                    <td>邮箱:</td>
+                    <td>{{userInfo.email}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </el-col>
+    </el-row>
+    <div slot="footer" class="dialog-footer">
+        <el-button @click="visible.userInfoVisible = false">关闭</el-button>
+    </div>
+</el-dialog>
+</body>
+</html>

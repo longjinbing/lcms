@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljb.dao.UserDao">
+    <cache-ref namespace="com.ljb.dao.UserDao"></cache-ref>
+    <select id="findByCode" resultMap="BaseResultMap">
+        select * from sys_user where code=#{code}
+    </select>
+    <update id="updateByIdSelective" parameterType="com.ljb.entity.User">
+        update sys_user
+        <set>
+            <if test="username != null">
+                `username` = #{username},
+            </if>
+            <if test="nickname != null">
+                `nickname` = #{nickname},
+            </if>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="password != null">
+                `password` = #{password},
+            </if>
+            <if test="email != null">
+                `email` = #{email},
+            </if>
+            <if test="phone != null">
+                `phone` = #{phone},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="isDelete != null">
+                `is_delete` = #{isDelete},
+            </if>
+            <if test="createId != null">
+                `create_id` = #{createId},
+            </if>
+            <if test="createTime != null">
+                `create_time` = #{createTime},
+            </if>
+            <if test="updateId != null">
+                `update_id` = #{updateId},
+            </if>
+            <if test="updateTime != null">
+                `update_time` = #{updateTime},
+            </if>
+            <if test="code != null">
+                `code` = #{code},
+            </if>
+            <if test="remark != null">
+                `remark` = #{remark}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO sys_user
+        (
+        `id` ,
+        `username` ,
+        `nickname` ,
+        `name` ,
+        `password` ,
+        `email` ,
+        `phone` ,
+        `status` ,
+        `is_delete` ,
+        `create_id` ,
+        `create_time` ,
+        `update_id` ,
+        `update_time` ,
+        `code` ,
+        `remark` )
+        values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (
+            #{item.id},
+            #{item.username},
+            #{item.nickname},
+            #{item.name},
+            #{item.password},
+            #{item.email},
+            #{item.phone},
+            #{item.status},
+            #{item.isDelete},
+            #{item.createId},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateTime},
+            #{item.code},
+            #{item.remark} )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="java.util.List">>
+        <foreach item="item" index="index" collection="list" separator=";">
+            update sys_user
+            <set>
+                <if test="item.id != null">`id` =
+                    #{item.id} ,
+                </if>
+                <if test="item.username != null">`username` =
+                    #{item.username} ,
+                </if>
+                <if test="item.nickname != null">`nickname` =
+                    #{item.nickname} ,
+                </if>
+                <if test="item.name != null">`name` =
+                    #{item.name} ,
+                </if>
+                <if test="item.password != null">`password` =
+                    #{item.password} ,
+                </if>
+                <if test="item.email != null">`email` =
+                    #{item.email} ,
+                </if>
+                <if test="item.phone != null">`phone` =
+                    #{item.phone} ,
+                </if>
+                <if test="item.status != null">`status` =
+                    #{item.status} ,
+                </if>
+                <if test="item.isDelete != null">`is_delete` =
+                    #{item.isDelete} ,
+                </if>
+                <if test="item.createId != null">`create_id` =
+                    #{item.createId} ,
+                </if>
+                <if test="item.createTime != null">`create_time` =
+                    #{item.createTime} ,
+                </if>
+                <if test="item.updateId != null">`update_id` =
+                    #{item.updateId} ,
+                </if>
+                <if test="item.updateTime != null">`update_time` =
+                    #{item.updateTime} ,
+                </if>
+                <if test="item.code != null">`code` =
+                    #{item.code} ,
+                </if>
+                <if test="item.remark != null">`remark` =
+                    #{item.remark}
+                </if>
+            </set>
+            where `id` = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectMapById" resultMap="DetailsMap">
+        SELECT
+                t.`id` ,            t.`username` ,            t.`nickname` ,            t.`name` ,          t.`email` ,            t.`phone` ,            t.`status` ,            t.`is_delete` ,            t.`create_id` ,            t.`create_time` ,            t.`update_id` ,            t.`update_time` ,            t.`code` ,            t.`remark`                     ,s.`username` as createName,
+        s2.`username` as updateName
+        FROM sys_user t left join sys_user s on s.`id`= t.`create_id` LEFT JOIN sys_user s2 ON s2.`id`=t.`update_id`
+                 WHERE
+                 t.`is_delete`=1 and
+                  t.`id`=#{id}
+    </select>
+
+    <select id="selectMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`username` , t.`nickname` , t.`name` ,  t.`email` , t.`phone` , t.`status` ,
+        t.`is_delete` , t.`create_id` , t.`create_time` , t.`update_id` , t.`update_time` , t.`code` , t.`remark`
+        ,s.`username` as updateName
+        FROM sys_user t left join sys_user s on s.`id`= t.`update_id`
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+                and t.`is_delete`=1
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="selectTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM sys_user
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=1
+            </if>
+        </where>
+    </select>
+
+    <select id="recyleMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`username` , t.`nickname` , t.`name` ,  t.`email` , t.`phone` , t.`status` ,
+        t.`is_delete` , t.`create_id` , t.`create_time` , t.`update_id` , t.`update_time` , t.`code` , t.`remark`
+        ,s.`username` as updateName
+        FROM sys_user t left join sys_user s on s.`id`= t.`update_id`
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+                and t.`is_delete`=0
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="recyleTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM sys_user
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=0
+            </if>
+        </where>
+    </select>
+
+    <delete id="physicsDeleteBatch">
+        delete from sys_user where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="emptyRecyle">
+        delete from sys_user where is_delete=0
+    </delete>
+
+    <delete id="deleteBatch">
+        update sys_user set t.`is_delete`=0
+        where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <resultMap type="map" id="DetailsMap">
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="code" column="code"/>
+        <result property="remark" column="remark"/>
+        <result property="updateName" column="updateName"/>
+        <result property="createName" column="createName"/>
+    </resultMap>
+
+    <resultMap type="map" id="listResultMap">
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="code" column="code"/>
+        <result property="remark" column="remark"/>
+        <result property="updateName" column="updateName"/>
+    </resultMap>
+
+    <resultMap type="com.ljb.entity.User" id="BaseResultMap">
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="nickname" column="nickname"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="status" column="status"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="code" column="code"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+	    `id`,    	    `username`,    	    `nickname`,    	    `name`,    	    `password`,    	    `email`,    	    `phone`,    	    `status`,    	    `is_delete`,    	    `create_id`,    	    `create_time`,    	    `update_id`,    	    `update_time`,    	    `code`,    	    `remark`      	</sql>
+
+</mapper>

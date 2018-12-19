@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>在线用户管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-row class="toolbar">
+        <el-col :span="5">
+            <el-input placeholder="请输入内容" v-model="queryParams.text" size="medium" class="input-with-select">
+                <el-select v-model="queryParams.field" slot="prepend" placeholder="请选择">
+                    <el-option label="IP地址" value="ip"></el-option>
+                </el-select>
+                <el-button slot="append" @click="loadData" icon="el-icon-search"></el-button>
+            </el-input>
+        </el-col>
+        <el-col :span="5" :offset="1">
+            <el-button type="danger" @click="deleteData" size="medium"><i class="el-icon-delete"></i>强制下线</el-button>
+        </el-col>
+        <div th:replace="common/component :: toolbar"></div>
+    </el-row>
+    <el-row class="data">
+        <el-table size="mini"
+                  border
+                  v-loading="tableLoading"
+                  @selection-change="selectedChange"
+                  :data="tableData" :default-sort="{prop: 'id', order: 'desc'}"
+                  @sort-change="sortChange"
+                  style="width: 100%">
+            <el-table-column
+                    type="selection"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    type="index"
+                    width="50"
+                    label="序号"
+                    :index="generatorIndex">
+            </el-table-column>
+            <el-table-column
+                    prop="createName"
+                    label="用户名">
+            </el-table-column>
+            <el-table-column
+                    prop="createTime"
+                    label="登录时间">
+            </el-table-column>
+            <el-table-column
+                    prop="expireTime"
+                    label="过期时间">
+            </el-table-column>
+            <el-table-column
+                    prop="ticket"
+                    label="访问票据">
+            </el-table-column>
+            <el-table-column
+                    prop="remark"
+                    label="备注">
+            </el-table-column>
+            <el-table-column
+                    prop="ip"
+                    label="IP">
+            </el-table-column>
+            <el-table-column
+                    prop="principle"
+                    label="授权">
+            </el-table-column>
+            <el-table-column width="150"
+                             label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini" type="success"
+                            @click="updateDialogOpen(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini" type="info"
+                            @click="detailsDialogOpen(scope.$index, scope.row)">详情
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+    <div th:replace="common/component :: pagination"></div>
+    <el-dialog top="4vh" title="修改" :modal="false" :visible.sync="visible.editFormVisible">
+        <el-form v-loading="formLoading" ref="editForm" :rules="addRules" :model="editFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="过期时间" prop="expireTime">
+                        <el-input v-model="editFormData.expireTime" placeholder="过期时间"></el-input>
+                    </el-form-item>
+                    <el-form-item label="票据" prop="ticket">
+                        <el-input v-model="editFormData.ticket" placeholder="票据"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="备注" prop="remark">
+                        <el-input v-model="editFormData.remark" placeholder="备注"></el-input>
+                    </el-form-item>
+                    <el-form-item label="IP地址" prop="ip">
+                        <el-input v-model="editFormData.ip" placeholder="IP地址"></el-input>
+                    </el-form-item>
+                    <el-form-item label="授权" prop="principle">
+                        <el-input v-model="editFormData.principle" placeholder="授权"></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.editFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateFormData('editForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="详情" :modal="false" :visible.sync="visible.detailsVisible">
+        <el-row v-loading="formLoading">
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>过期时间:</td>
+                        <td>{{detailsData.expireTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>登录时间:</td>
+                        <td>{{detailsData.createTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>票据:</td>
+                        <td>{{detailsData.ticket}}</td>
+                    </tr>
+                    <tr>
+                        <td>备注:</td>
+                        <td>{{detailsData.remark}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-col>
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>IP地址:</td>
+                        <td>{{detailsData.ip}}</td>
+                    </tr>
+                    <tr>
+                        <td>授权:</td>
+                        <td>{{detailsData.principle}}</td>
+                    </tr>
+                    <tr>
+                        <td>操作人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.createId)">{{detailsData.createName}}</a></td>
+                    </tr>
+                    <tr>
+                        <td>更新人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.updateId)">{{detailsData.updateName}}</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.detailsVisible = false">关闭</el-button>
+        </div>
+    </el-dialog>
+    <div th:replace="common/component :: exportDialog"></div>
+    <div th:replace="common/component :: userInfo"></div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/manage/token.js}"></script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>商品属性类型管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-row class="toolbar">
+        <el-col :span="5">
+            <el-input placeholder="请输入内容" v-model="queryParams.text" size="medium" class="input-with-select">
+                <el-select v-model="queryParams.field" slot="prepend" placeholder="请选择">
+                                            <el-option label="商品类型" value="attributeCategoryId"></el-option>
+                                            <el-option label="属性名称" value="name"></el-option>
+                                            <el-option label="当添加商品时,该属性的添加类别; 0为手功输入;1为选择输入;2为多行文本输入" value="inputType"></el-option>
+                                            <el-option label="即选择输入,则attr_name对应的值的取值就是该这字段值 " value="value"></el-option>
+                                            <el-option label="" value="orderNum"></el-option>
+                                    </el-select>
+                <el-button slot="append" @click="loadData" icon="el-icon-search"></el-button>
+            </el-input>
+        </el-col>
+        <el-col :span="5" :offset="1">
+            <el-button type="success" @click="visible.addFormVisible = true" size="medium"><i
+                    class="el-icon-plus">新增</i></el-button>
+            <el-button type="danger" @click="deleteData" size="medium"><i class="el-icon-delete"></i>删除</el-button>
+        </el-col>
+        <div th:replace="common/component :: toolbar"></div>
+    </el-row>
+    <el-row class="data">
+        <el-table size="mini"
+                  border
+                  v-loading="tableLoading"
+                  @selection-change="selectedChange"
+                  :data="tableData" :default-sort="{prop: 'id', order: 'desc'}"
+                  @sort-change="sortChange"
+                  style="width: 100%">
+            <el-table-column
+                    type="selection"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    type="index"
+                    width="50"
+                    label="序号"
+                    :index="generatorIndex">
+            </el-table-column>
+                                                <el-table-column
+                            prop="attributeCategoryId"
+                            label="商品类型">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="name"
+                            label="属性名称">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="inputType"
+                            label="当添加商品时,该属性的添加类别; 0为手功输入;1为选择输入;2为多行文本输入">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="value"
+                            label="即选择输入,则attr_name对应的值的取值就是该这字段值 ">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="orderNum"
+                            label=""
+                            width="60">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="status"
+                            label=""
+                            width="60">
+                        <template slot-scope="scope">
+                            <el-tag
+                                    size="mini" :type="tagTypeList[scope.row.status]">
+                                {{statusList[scope.row.status]}}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="updateTime"
+                            label=""
+                            sortable="custom"
+                            width="150">
+                    </el-table-column>
+                                                                <el-table-column
+                            prop="updateName"
+                            label="操作人">
+                    </el-table-column>
+                                        <el-table-column width="150"
+                             label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini" type="success"
+                            @click="updateDialogOpen(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini" type="info"
+                            @click="detailsDialogOpen(scope.$index, scope.row)">详情
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+            <div th:replace="common/component :: pagination"></div>
+        <el-dialog top="4vh" title="新增" :modal="false" :open="addDialogOpen" :visible.sync="visible.addFormVisible">
+        <el-form v-loading="formLoading" :rules="addRules" ref="addForm" :model="addFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                                                                                                        <el-form-item label="商品类型" prop="attributeCategoryId">
+                                    <el-input v-model="addFormData.attributeCategoryId" placeholder="商品类型"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="属性名称" prop="name">
+                                    <el-input v-model="addFormData.name" placeholder="属性名称"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="当添加商品时,该属性的添加类别; 0为手功输入;1为选择输入;2为多行文本输入" prop="inputType">
+                                    <el-input v-model="addFormData.inputType" placeholder="当添加商品时,该属性的添加类别; 0为手功输入;1为选择输入;2为多行文本输入"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="即选择输入,则attr_name对应的值的取值就是该这字段值 " prop="value">
+                                    <el-input v-model="addFormData.value" placeholder="即选择输入,则attr_name对应的值的取值就是该这字段值 "></el-input>
+                                </el-form-item>
+                                                                                                                                    </el-col>
+                <el-col :span="12">
+                                                                                                                                                                                                                                                                                        <el-form-item label="">
+                                    <el-radio-group v-model="addFormData.status" size="medium">
+                                        <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                                         size="medium">{{item}}</el-radio-button>
+                                    </el-radio-group>
+                                </el-form-item>
+                                                                                        </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.addFormVisible = false">取 消</el-button>
+            <el-button @click="resetForm('addForm')">重置</el-button>
+            <el-button type="primary" @click="saveFormData('addForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="修改" :modal="false" :visible.sync="visible.editFormVisible">
+        <el-form v-loading="formLoading" ref="editForm" :rules="addRules" :model="editFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                                                                                                        <el-form-item label="商品类型" prop="attributeCategoryId">
+                                    <el-input v-model="editFormData.attributeCategoryId"  placeholder="商品类型"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="属性名称" prop="name">
+                                    <el-input v-model="editFormData.name"  placeholder="属性名称"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="当添加商品时,该属性的添加类别; 0为手功输入;1为选择输入;2为多行文本输入" prop="inputType">
+                                    <el-input v-model="editFormData.inputType"  placeholder="当添加商品时,该属性的添加类别; 0为手功输入;1为选择输入;2为多行文本输入"></el-input>
+                                </el-form-item>
+                                                                                                                                                            <el-form-item label="即选择输入,则attr_name对应的值的取值就是该这字段值 " prop="value">
+                                    <el-input v-model="editFormData.value"  placeholder="即选择输入,则attr_name对应的值的取值就是该这字段值 "></el-input>
+                                </el-form-item>
+                                                                                                                                    </el-col>
+                <el-col :span="12">
+                                                                                                                                                                                                                                                                                        <el-form-item label="">
+                                    <el-radio-group v-model="editFormData.status" size="medium">
+                                        <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                                         size="medium">{{item}}</el-radio-button>
+                                    </el-radio-group>
+                                </el-form-item>
+                                                                                        </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.editFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateFormData('editForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="详情" :modal="false" :visible.sync="visible.detailsVisible">
+        <el-row v-loading="formLoading">
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                                                                                <tr>
+                                <td>商品类型:</td>
+                                <td>{{detailsData.attributeCategoryId}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>属性名称:</td>
+                                <td>{{detailsData.name}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>当添加商品时,该属性的添加类别; 0为手功输入;1为选择输入;2为多行文本输入:</td>
+                                <td>{{detailsData.inputType}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>即选择输入,则attr_name对应的值的取值就是该这字段值 :</td>
+                                <td>{{detailsData.value}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>:</td>
+                                <td>
+                                    <el-tag size="mini" :type="tagTypeList[detailsData.status]">
+                                        {{statusList[detailsData.status]}}
+                                    </el-tag>
+                                </td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>:</td>
+                                <td>{{detailsData.createTime}}</td>
+                            </tr>
+                                                                                                            <tr>
+                                <td>:</td>
+                                <td>{{detailsData.updateTime}}</td>
+                            </tr>
+                                                                        </tbody>
+                </table>
+            </el-col>
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                                                <tr>
+                            <td>操作人:</td>
+                            <td><a class="m-link"
+                                   @click="queryUserInfo(detailsData.createId)">{{detailsData.createName}}</a></td>
+                        </tr>
+                        <tr>
+                            <td>更新人:</td>
+                            <td><a class="m-link"
+                                   @click="queryUserInfo(detailsData.updateId)">{{detailsData.updateName}}</a></td>
+                        </tr>
+                                            </tbody>
+                </table>
+            </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.detailsVisible = false">关闭</el-button>
+        </div>
+    </el-dialog>
+    <div th:replace="common/component :: exportDialog"></div>
+    <div th:replace="common/component :: userInfo"></div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/goods/goodsattributecategory.js}"></script>
+</body>
+</html>

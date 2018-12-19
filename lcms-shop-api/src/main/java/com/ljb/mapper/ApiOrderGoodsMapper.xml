@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljb.dao.ApiOrderGoodsDao">
+    <update id="updateByIdSelective" parameterType="com.ljb.entity.ApiOrderGoods">
+        update shop_order_goods
+        <set>
+            <if test="orderId != null">
+                `order_id` = #{orderId},
+            </if>
+            <if test="goodsId != null">
+                `goods_id` = #{goodsId},
+            </if>
+            <if test="goodsName != null">
+                `goods_name` = #{goodsName},
+            </if>
+            <if test="goodsSn != null">
+                `goods_sn` = #{goodsSn},
+            </if>
+            <if test="productId != null">
+                `product_id` = #{productId},
+            </if>
+            <if test="number != null">
+                `number` = #{number},
+            </if>
+            <if test="marketPrice != null">
+                `market_price` = #{marketPrice},
+            </if>
+            <if test="retailPrice != null">
+                `retail_price` = #{retailPrice},
+            </if>
+            <if test="goodsSpecifitionNameValue != null">
+                `goods_specifition_name_value` = #{goodsSpecifitionNameValue},
+            </if>
+            <if test="isReal != null">
+                `is_real` = #{isReal},
+            </if>
+            <if test="goodsSpecifitionIds != null">
+                `goods_specifition_ids` = #{goodsSpecifitionIds},
+            </if>
+            <if test="listPicUrl != null">
+                `list_pic_url` = #{listPicUrl},
+            </if>
+            <if test="isDelete != null">
+                `is_delete` = #{isDelete},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="createId != null">
+                `create_id` = #{createId},
+            </if>
+            <if test="createTime != null">
+                `create_time` = #{createTime},
+            </if>
+            <if test="updateId != null">
+                `update_id` = #{updateId},
+            </if>
+            <if test="updateTime != null">
+                `update_time` = #{updateTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO shop_order_goods
+        (
+        `id` ,
+        `order_id` ,
+        `goods_id` ,
+        `goods_name` ,
+        `goods_sn` ,
+        `product_id` ,
+        `number` ,
+        `market_price` ,
+        `retail_price` ,
+        `goods_specifition_name_value` ,
+        `is_real` ,
+        `goods_specifition_ids` ,
+        `list_pic_url` ,
+        `is_delete` ,
+        `status` ,
+        `create_id` ,
+        `create_time` ,
+        `update_id` ,
+        `update_time` )
+        values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (
+            #{item.id},
+            #{item.orderId},
+            #{item.goodsId},
+            #{item.goodsName},
+            #{item.goodsSn},
+            #{item.productId},
+            #{item.number},
+            #{item.marketPrice},
+            #{item.retailPrice},
+            #{item.goodsSpecifitionNameValue},
+            #{item.isReal},
+            #{item.goodsSpecifitionIds},
+            #{item.listPicUrl},
+            #{item.isDelete},
+            #{item.status},
+            #{item.createId},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateTime} )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="java.util.List">>
+        <foreach item="item" index="index" collection="list" separator=";">
+            update shop_order_goods
+            <set>
+                <if test="item.id != null">`id` =
+                    #{item.id} ,
+                </if>
+                <if test="item.orderId != null">`order_id` =
+                    #{item.orderId} ,
+                </if>
+                <if test="item.goodsId != null">`goods_id` =
+                    #{item.goodsId} ,
+                </if>
+                <if test="item.goodsName != null">`goods_name` =
+                    #{item.goodsName} ,
+                </if>
+                <if test="item.goodsSn != null">`goods_sn` =
+                    #{item.goodsSn} ,
+                </if>
+                <if test="item.productId != null">`product_id` =
+                    #{item.productId} ,
+                </if>
+                <if test="item.number != null">`number` =
+                    #{item.number} ,
+                </if>
+                <if test="item.marketPrice != null">`market_price` =
+                    #{item.marketPrice} ,
+                </if>
+                <if test="item.retailPrice != null">`retail_price` =
+                    #{item.retailPrice} ,
+                </if>
+                <if test="item.goodsSpecifitionNameValue != null">`goods_specifition_name_value` =
+                    #{item.goodsSpecifitionNameValue} ,
+                </if>
+                <if test="item.isReal != null">`is_real` =
+                    #{item.isReal} ,
+                </if>
+                <if test="item.goodsSpecifitionIds != null">`goods_specifition_ids` =
+                    #{item.goodsSpecifitionIds} ,
+                </if>
+                <if test="item.listPicUrl != null">`list_pic_url` =
+                    #{item.listPicUrl} ,
+                </if>
+                <if test="item.isDelete != null">`is_delete` =
+                    #{item.isDelete} ,
+                </if>
+                <if test="item.status != null">`status` =
+                    #{item.status} ,
+                </if>
+                <if test="item.createId != null">`create_id` =
+                    #{item.createId} ,
+                </if>
+                <if test="item.createTime != null">`create_time` =
+                    #{item.createTime} ,
+                </if>
+                <if test="item.updateId != null">`update_id` =
+                    #{item.updateId} ,
+                </if>
+                <if test="item.updateTime != null">`update_time` =
+                    #{item.updateTime}
+                </if>
+            </set>
+            where `id` = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectMapById" resultMap="DetailsMap">
+        SELECT
+                t.`id` ,            t.`order_id` ,            t.`goods_id` ,            t.`goods_name` ,            t.`goods_sn` ,            t.`product_id` ,            t.`number` ,            t.`market_price` ,            t.`retail_price` ,            t.`goods_specifition_name_value` ,            t.`is_real` ,            t.`goods_specifition_ids` ,            t.`list_pic_url`
+        FROM shop_order_goods t
+                 WHERE
+                 t.`is_delete`=1 and
+                  t.`id`=#{id}
+    </select>
+
+    <select id="selectMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`order_id` , t.`goods_id` , t.`goods_name` , t.`goods_sn` , t.`product_id` , t.`number` ,
+        t.`market_price` , t.`retail_price` , t.`goods_specifition_name_value` , t.`is_real` , t.`goods_specifition_ids`
+        , t.`list_pic_url`
+        FROM shop_order_goods t
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+            and t.`is_delete`=1
+        </if>
+
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="selectTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_order_goods
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=1
+            </if>
+        </where>
+    </select>
+
+    <select id="recyleMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`order_id` , t.`goods_id` , t.`goods_name` , t.`goods_sn` , t.`product_id` , t.`number` ,
+        t.`market_price` , t.`retail_price` , t.`goods_specifition_name_value` , t.`is_real` , t.`goods_specifition_ids`
+        , t.`list_pic_url` , t.`is_delete` , t.`status` , t.`create_id` , t.`create_time` , t.`update_id` ,
+        t.`update_time` ,s.`username` as updateName
+        FROM shop_order_goods t left join sys_user s on s.`id`= t.`update_id`
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+                and t.`is_delete`=0
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="recyleTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_order_goods
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=0
+            </if>
+        </where>
+    </select>
+
+    <delete id="physicsDeleteBatch">
+        delete from shop_order_goods where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="emptyRecyle">
+        delete from shop_order_goods where is_delete=0
+    </delete>
+
+    <delete id="deleteBatch">
+        update shop_order_goods set t.`is_delete`=0
+        where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <resultMap type="map" id="DetailsMap">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="goodsSn" column="goods_sn"/>
+        <result property="productId" column="product_id"/>
+        <result property="number" column="number"/>
+        <result property="marketPrice" column="market_price"/>
+        <result property="retailPrice" column="retail_price"/>
+        <result property="goodsSpecifitionNameValue" column="goods_specifition_name_value"/>
+        <result property="isReal" column="is_real"/>
+        <result property="goodsSpecifitionIds" column="goods_specifition_ids"/>
+        <result property="listPicUrl" column="list_pic_url"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="status" column="status"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateName" column="updateName"/>
+        <result property="createName" column="createName"/>
+    </resultMap>
+
+    <resultMap type="map" id="listResultMap">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="goodsSn" column="goods_sn"/>
+        <result property="productId" column="product_id"/>
+        <result property="number" column="number"/>
+        <result property="marketPrice" column="market_price"/>
+        <result property="retailPrice" column="retail_price"/>
+        <result property="goodsSpecifitionNameValue" column="goods_specifition_name_value"/>
+        <result property="isReal" column="is_real"/>
+        <result property="goodsSpecifitionIds" column="goods_specifition_ids"/>
+        <result property="listPicUrl" column="list_pic_url"/>
+        <result property="status" column="status"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateName" column="updateName"/>
+    </resultMap>
+
+    <resultMap type="com.ljb.entity.ApiOrderGoods" id="BaseResultMap">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="goodsSn" column="goods_sn"/>
+        <result property="productId" column="product_id"/>
+        <result property="number" column="number"/>
+        <result property="marketPrice" column="market_price"/>
+        <result property="retailPrice" column="retail_price"/>
+        <result property="goodsSpecifitionNameValue" column="goods_specifition_name_value"/>
+        <result property="isReal" column="is_real"/>
+        <result property="goodsSpecifitionIds" column="goods_specifition_ids"/>
+        <result property="listPicUrl" column="list_pic_url"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="status" column="status"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+	    `id`,    	    `order_id`,    	    `goods_id`,    	    `goods_name`,    	    `goods_sn`,    	    `product_id`,    	    `number`,    	    `market_price`,    	    `retail_price`,    	    `goods_specifition_name_value`,    	    `is_real`,    	    `goods_specifition_ids`,    	    `list_pic_url`,    	    `is_delete`,    	    `status`,    	    `create_id`,    	    `create_time`,    	    `update_id`,    	    `update_time`      	</sql>
+
+</mapper>

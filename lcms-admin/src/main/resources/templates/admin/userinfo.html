@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="lib/css :: css(~{::title},~{::link})">
+    <title>系统</title>
+    <link rel="stylesheet" th:href="@{/static/admin/systeminfo.css}">
+</head>
+<body>
+<div id="main" v-cloak>
+
+    <el-row type="flex" justify="center">
+        <table class="user-info-table">
+            <tbody>
+            <tr>
+                <td class="left">用户名:</td><td class="right">{{user.username}}</td> <td class="left">编码:</td><td class="right">{{user.code}}</td>
+            </tr>
+            <tr>
+                <td class="left">姓名:</td> <td class="right">{{user.name}}</td> <td class="left">邮箱:</td> <td class="right">{{user.email}}</td>
+            </tr>
+            <tr>
+                <td class="left">手机:</td> <td class="right">{{user.phone}}</td> <td class="left">注册时间:</td> <td class="right">{{user.createTime}}</td>
+            </tr>
+            <tr>
+                <td class="left">状态:</td> <td class="right"><el-tag type="success" size="small">{{statusList[user.status]}}</el-tag></td> <td class="left">角色:</td> <td class="right"><el-tag type="primary" size="small" v-for="item in roles">{{item}}</el-tag></td>
+            </tr>
+            </tbody>
+        </table>
+    </el-row>
+
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/admin/userinfo.js}"></script>
+</body>
+</html>

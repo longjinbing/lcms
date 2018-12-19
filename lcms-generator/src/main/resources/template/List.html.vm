@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>${comment}</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-row class="toolbar">
+        <el-col :span="5">
+            <el-input placeholder="请输入内容" v-model="queryParams.text" size="medium" class="input-with-select">
+                <el-select v-model="queryParams.field" slot="prepend" placeholder="请选择">
+                    #foreach($column in $queryConditionColumns)
+                        <el-option label="${column.comment}" value="$column.columnName"></el-option>
+                    #end
+                </el-select>
+                <el-button slot="append" @click="loadData" icon="el-icon-search"></el-button>
+            </el-input>
+        </el-col>
+        <el-col :span="5" :offset="1">
+            <el-button type="success" @click="visible.addFormVisible = true" size="medium"><i
+                    class="el-icon-plus">新增</i></el-button>
+            <el-button type="danger" @click="deleteData" size="medium"><i class="el-icon-delete"></i>删除</el-button>
+        </el-col>
+        <div th:replace="common/component :: toolbar"></div>
+    </el-row>
+    <el-row class="data">
+        <el-table size="mini"
+                  border
+                  v-loading="tableLoading"
+                  @selection-change="selectedChange"
+                  :data="tableData" :default-sort="{prop: 'id', order: 'desc'}"
+                  @sort-change="sortChange"
+                  style="width: 100%">
+            <el-table-column
+                    type="selection"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    type="index"
+                    width="50"
+                    label="序号"
+                    :index="generatorIndex">
+            </el-table-column>
+            #foreach($column in $displayColumns)
+                #if($column.columnName == "status")
+                    <el-table-column
+                            prop="${column.columnName}"
+                            label="${column.comment}"
+                            width="60">
+                        <template slot-scope="scope">
+                            <el-tag
+                                    size="mini" :type="tagTypeList[scope.row.${column.columnName}]">
+                                {{statusList[scope.row.status]}}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+                #elseif($column.columnName == "orderNum")
+                    <el-table-column
+                            prop="${column.columnName}"
+                            label="${column.comment}"
+                            width="60">
+                    </el-table-column>
+                #elseif($column.columnName == "updateTime")
+                    <el-table-column
+                            prop="${column.columnName}"
+                            label="${column.comment}"
+                            sortable="custom"
+                            width="150">
+                    </el-table-column>
+                #else
+                    <el-table-column
+                            prop="${column.columnName}"
+                            label="${column.comment}">
+                    </el-table-column>
+                #end
+            #end
+            <el-table-column width="150"
+                             label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini" type="success"
+                            @click="updateDialogOpen(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini" type="info"
+                            @click="detailsDialogOpen(scope.$index, scope.row)">详情
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+    #if( $config.pagination)
+        <div th:replace="common/component :: pagination"></div>
+    #end
+    <el-dialog top="4vh" title="新增" :modal="false" :open="addDialogOpen" :visible.sync="visible.addFormVisible">
+        <el-form v-loading="formLoading" :rules="addRules" ref="addForm" :model="addFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    #foreach($column in $addFormColumns)
+                        #if($velocityCount < $columns.size() / 2 - 1 )
+                            #if($column.columnName == "status")
+                                <el-form-item label="${column.comment}">
+                                    <el-radio-group v-model="addFormData.$column.columnName" size="medium">
+                                        <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                                         size="medium">{{item}}</el-radio-button>
+                                    </el-radio-group>
+                                </el-form-item>
+                            #else
+                                <el-form-item label="${column.comment}" prop="${column.columnName}">
+                                    <el-input v-model="addFormData.${column.columnName}" placeholder="${column.comment}"></el-input>
+                                </el-form-item>
+                            #end
+                        #end
+                    #end
+                </el-col>
+                <el-col :span="12">
+                    #foreach($column in $addFormColumns)
+                        #if($velocityCount >= $columns.size() / 2 - 1 )
+                            #if($column.columnName == "status")
+                                <el-form-item label="${column.comment}">
+                                    <el-radio-group v-model="addFormData.$column.columnName" size="medium">
+                                        <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                                         size="medium">{{item}}</el-radio-button>
+                                    </el-radio-group>
+                                </el-form-item>
+                            #else
+                                <el-form-item label="${column.comment}" prop="${column.columnName}">
+                                    <el-input v-model="addFormData.${column.columnName}"  placeholder="${column.comment}"></el-input>
+                                </el-form-item>
+                            #end
+                        #end
+                    #end
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.addFormVisible = false">取 消</el-button>
+            <el-button @click="resetForm('addForm')">重置</el-button>
+            <el-button type="primary" @click="saveFormData('addForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="修改" :modal="false" :visible.sync="visible.editFormVisible">
+        <el-form v-loading="formLoading" ref="editForm" :rules="addRules" :model="editFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    #foreach($column in $editFormColumns)
+                        #if($velocityCount < $columns.size() / 2 - 1)
+                            #if($column.columnName == "status")
+                                <el-form-item label="${column.comment}">
+                                    <el-radio-group v-model="editFormData.$column.columnName" size="medium">
+                                        <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                                         size="medium">{{item}}</el-radio-button>
+                                    </el-radio-group>
+                                </el-form-item>
+                            #else
+                                <el-form-item label="${column.comment}" prop="${column.columnName}">
+                                    <el-input v-model="editFormData.${column.columnName}"  placeholder="${column.comment}"></el-input>
+                                </el-form-item>
+                            #end
+                        #end
+                    #end
+                </el-col>
+                <el-col :span="12">
+                    #foreach($column in $editFormColumns)
+                        #if($velocityCount >= $columns.size() / 2 - 1 )
+                            #if($column.columnName == "status")
+                                <el-form-item label="${column.comment}">
+                                    <el-radio-group v-model="editFormData.$column.columnName" size="medium">
+                                        <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                                         size="medium">{{item}}</el-radio-button>
+                                    </el-radio-group>
+                                </el-form-item>
+                            #else
+                                <el-form-item label="${column.comment}" prop="${column.columnName}">
+                                    <el-input v-model="editFormData.${column.columnName}" placeholder="${column.comment}"></el-input>
+                                </el-form-item>
+                            #end
+                        #end
+                    #end
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.editFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateFormData('editForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="详情" :modal="false" :visible.sync="visible.detailsVisible">
+        <el-row v-loading="formLoading">
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                        #foreach($column in $detailsColumns)
+                            #if($column.columnName == "status")
+                            <tr>
+                                <td>${column.comment}:</td>
+                                <td>
+                                    <el-tag size="mini" :type="tagTypeList[detailsData.${column.columnName}]">
+                                        {{statusList[detailsData.${column.columnName}]}}
+                                    </el-tag>
+                                </td>
+                            </tr>
+                            #else
+                            <tr>
+                                <td>${column.comment}:</td>
+                                <td>{{detailsData.${column.columnName}}}</td>
+                            </tr>
+                            #end
+                        #end
+                    </tbody>
+                </table>
+            </el-col>
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                        #if( $config.joinQuery)
+                        <tr>
+                            <td>操作人:</td>
+                            <td><a class="m-link"
+                                   @click="queryUserInfo(detailsData.createId)">{{detailsData.createName}}</a></td>
+                        </tr>
+                        <tr>
+                            <td>更新人:</td>
+                            <td><a class="m-link"
+                                   @click="queryUserInfo(detailsData.updateId)">{{detailsData.updateName}}</a></td>
+                        </tr>
+                        #end
+                    </tbody>
+                </table>
+            </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.detailsVisible = false">关闭</el-button>
+        </div>
+    </el-dialog>
+    <div th:replace="common/component :: exportDialog"></div>
+    <div th:replace="common/component :: userInfo"></div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/${module}/${pathName}.js}"></script>
+</body>
+</html>

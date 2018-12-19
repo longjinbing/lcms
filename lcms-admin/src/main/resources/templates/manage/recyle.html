@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>回收中心</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-button type="success" @click="initSystem">初始化系统</el-button>
+    <el-button type="warning"  @click="clearRecyle">清空回收站</el-button>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/manage/recyle.js}"></script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>菜单管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-row class="toolbar">
+        <el-col :span="5">
+            <el-input placeholder="请输入内容" v-model="queryParams.text" size="medium" class="input-with-select">
+                <el-select v-model="queryParams.field" slot="prepend" placeholder="请选择">
+                    <el-option label="菜单名称" value="name"></el-option>
+                    <el-option label="菜单URL" value="url"></el-option>
+                    <el-option label="类型" value="type"></el-option>
+                    <el-option label="菜单图标" value="icon"></el-option>
+                    <el-option label="排序" value="orderNum"></el-option>
+                </el-select>
+                <el-button slot="append" @click="loadData" icon="el-icon-search"></el-button>
+            </el-input>
+        </el-col>
+        <el-col :span="13" :offset="1">
+            <el-button type="success" @click="openAddFormDialogSame" size="medium"><i
+                    class="el-icon-plus">新增同级菜单</i></el-button>
+            <el-button type="warning" @click="openAddFormDialogChild" size="medium"><i
+                    class="el-icon-plus">新增下级菜单</i></el-button>
+            <el-button type="danger" @click="deleteData" size="medium"><i class="el-icon-delete"></i>删除</el-button>
+        </el-col>
+        <el-col th:fragment="toolbar" :span="5">
+            <el-button type="primary" @click="loadData" size="medium"><i class="el-icon-refresh"></i>刷新</el-button>
+        </el-col>
+    </el-row>
+    <el-row class="data">
+        <el-table size="mini"
+                  border
+                  v-loading="tableLoading"
+                  @selection-change="selectedChange"
+                  :data="tableData" :default-sort="{prop: 'id', order: 'desc'}"
+                  @sort-change="sortChange"
+                  style="width: 100%">
+            <el-table-column
+                    type="selection"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    type="index"
+                    width="50"
+                    label="序号"
+                    :index="generatorIndex">
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    label="菜单名称">
+                <div th:replace="common/component :: treeColumn"></div>
+            </el-table-column>
+            <el-table-column
+                    prop="url"
+                    label="菜单URL">
+            </el-table-column>
+            <el-table-column
+                    prop="type"
+                    label="类型"
+            width="80">
+                <template slot-scope="scope">
+                    <el-tag
+                            size="mini" :type="tagTypeList[scope.row.type]">
+                        {{menuTypeList[scope.row.type]}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="icon"
+                    width="60"
+                    label="图标">
+            </el-table-column>
+            <el-table-column
+                    prop="orderNum"
+                    label="排序"
+                    width="140">
+                <div th:replace="common/component :: sortbar"></div>
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    label="状态"
+                    width="60">
+                <template slot-scope="scope">
+                    <el-tag
+                            size="mini" :type="tagTypeList[scope.row.status]">
+                        {{statusList[scope.row.status]}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="updateTime"
+                    label="更新时间"
+                    sortable="custom"
+                    width="150">
+            </el-table-column>
+            <el-table-column
+                    prop="updateName"
+                    label="操作人">
+            </el-table-column>
+            <el-table-column width="250"
+                             label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini" type="success"
+                            @click="updateDialogOpen(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini" type="info"
+                            @click="detailsDialogOpen(scope.$index, scope.row)">详情
+                    </el-button>
+                    <el-button
+                            size="mini" type="danger"
+                            @click="deleteDataRow(scope.$index, scope.row)">删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+    <div th:replace="common/component :: pagination"></div>
+    <el-dialog top="4vh" title="新增" :modal="false" :open="addDialogOpen" :visible.sync="visible.addFormVisible">
+        <el-form v-loading="formLoading" :rules="addRules" ref="addForm" :model="addFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="菜单名称" prop="name">
+                        <el-input v-model="addFormData.name" placeholder="菜单名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="菜单URL" prop="url">
+                        <el-input v-model="addFormData.url" placeholder="菜单URL"></el-input>
+                    </el-form-item>
+                    <el-form-item label="类型" prop="type">
+                        <el-radio-group v-model="addFormData.type" size="medium">
+                            <el-radio-button v-for="(item,index) in menuTypeList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="菜单图标" prop="icon">
+                        <el-input v-model="addFormData.icon" placeholder="菜单图标"></el-input>
+                    </el-form-item>
+                    <el-form-item label="状态">
+                        <el-radio-group v-model="addFormData.status" size="medium">
+                            <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.addFormVisible = false">取 消</el-button>
+            <el-button @click="resetForm('addForm')">重置</el-button>
+            <el-button type="primary" @click="saveFormData('addForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="修改" :modal="false" :visible.sync="visible.editFormVisible">
+        <el-form v-loading="formLoading" ref="editForm" :rules="addRules" :model="editFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="菜单名称" prop="name">
+                        <el-input v-model="editFormData.name" placeholder="菜单名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="菜单URL" prop="url">
+                        <el-input v-model="editFormData.url" placeholder="菜单URL"></el-input>
+                    </el-form-item>
+                    <el-form-item label="类型" prop="type">
+                        <el-radio-group v-model="editFormData.type" size="medium">
+                            <el-radio-button v-for="(item,index) in menuTypeList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="菜单图标" prop="icon">
+                        <el-input v-model="editFormData.icon" placeholder="菜单图标"></el-input>
+                    </el-form-item>
+                    <el-form-item label="状态">
+                        <el-radio-group v-model="editFormData.status" size="medium">
+                            <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.editFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateFormData('editForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="详情" :modal="false" :visible.sync="visible.detailsVisible">
+        <el-row v-loading="formLoading">
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>菜单名称:</td>
+                        <td>{{detailsData.name}}</td>
+                    </tr>
+                    <tr>
+                        <td>菜单URL:</td>
+                        <td>{{detailsData.url}}</td>
+                    </tr>
+                    <tr>
+                        <td>类型:</td>
+                        <td>{{detailsData.type}}</td>
+                    </tr>
+                    <tr>
+                        <td>菜单图标:</td>
+                        <td>{{detailsData.icon}}</td>
+                    </tr>
+                    <tr>
+                        <td>状态:</td>
+                        <td>
+                            <el-tag size="mini" :type="tagTypeList[detailsData.status]">
+                                {{statusList[detailsData.status]}}
+                            </el-tag>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </el-col>
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>创建时间:</td>
+                        <td>{{detailsData.createTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>更新时间:</td>
+                        <td>{{detailsData.updateTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>操作人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.createId)">{{detailsData.createName}}</a></td>
+                    </tr>
+                    <tr>
+                        <td>更新人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.updateId)">{{detailsData.updateName}}</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.detailsVisible = false">关闭</el-button>
+        </div>
+    </el-dialog>
+    <div th:replace="common/component :: exportDialog"></div>
+    <div th:replace="common/component :: userInfo"></div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/manage/menu.js}"></script>
+</body>
+</html>

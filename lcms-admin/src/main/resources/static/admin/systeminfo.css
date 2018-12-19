@@ -1,0 +1,71 @@
+.clear-icon {
+    display: block;
+    margin: 0 auto;
+    font-size: 20px;
+}
+
+.system-icon {
+    color: #32cc85;
+}
+
+.information-icon {
+    color: #00b7ee;
+}
+
+.content-null-title {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.information {
+    min-height: 350px;
+}
+
+.information > div > div {
+    height: 350px;
+}
+
+.system > div {
+    height: 300px;
+}
+
+.system-table {
+    width: 100%;
+    font-size: 16px;
+}
+
+.system-table > tbody > tr {
+    height: 40px;
+    line-height: 40px;
+}
+
+.system-table > tbody > tr > td {
+    width: 50%;
+    padding: 0 5px;
+}
+
+.clear-dram-button {
+    display: block;
+    width: 100px;
+    height: 100px;
+    margin: 10px auto;
+    border: 0;
+    border-radius: 50px;
+    background: linear-gradient(120deg, #00e4d0, #5983e8);
+    font-size: 14px;
+    color: #fff;
+}
+
+.system-table > tbody > tr > td:first-child {
+    text-align: right;
+}
+
+.system-table > tbody > tr > td:last-child {
+    text-align: left;
+}
+
+.cpu-info {
+    height: 250px;
+    width: 250px;
+    margin: 0 auto;
+}

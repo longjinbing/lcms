@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${package}.dao.${entityName}Dao">
+    <cache-ref namespace="${package}.dao.${entityName}Dao"></cache-ref>
+    <update id="updateByIdSelective" parameterType="${package}.entity.${entityName}">
+        update ${tableName}
+        <set>
+            #foreach($column in $columns)
+                #if($column.columnName != $pk.columnName)
+                    <if test="${column.columnName} != null">
+                        `$column.originalColumnName` = #{${column.columnName}}#if($velocityCount != $columns.size()),
+                    #end
+                    </if>
+                #end
+            #end
+        </set>
+        where id = #{${pk.columnName}}
+    </update>
+    <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO ${tableName}
+        (
+        #foreach($column in $columns)
+            #if( !$column.isPrimary || !$column.isAutoIncrement )
+                `$column.originalColumnName` #if($velocityCount != $columns.size()),
+            #end
+            #end
+        #end
+        )
+        values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (
+            #foreach($column in $columns)
+                #if( !$column.isPrimary || !$column.isAutoIncrement )
+                    #{item.${column.columnName}}#if($velocityCount != $columns.size()),
+                #end
+                #end
+            #end
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="java.util.List">>
+        <foreach item="item" index="index" collection="list" separator=";">
+            update ${tableName}
+            <set>
+                #foreach($column in $columns)
+                    #if( !$column.isPrimary || !$column.isAutoIncrement )
+                        <if test="item.$column.columnName != null">`$column.originalColumnName` =
+                            #{item.$column.columnName} #if($velocityCount != $columns.size()), #end </if>
+                    #end #end
+            </set>
+            where `id` = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectMapById" resultMap="DetailsMap">
+        SELECT
+        #foreach($column in $columns)
+        t.`$column.originalColumnName` #if($velocityCount != $columns.size()),#end
+    #end
+        #if( $config.joinQuery )
+        ,s.`username` as createName,
+        s2.`username` as updateName
+        FROM ${tableName} t left join sys_user s on s.`id`= t.`create_id` LEFT JOIN sys_user s2 ON s2.`id`=t.`update_id`
+        #else
+        FROM ${tableName}
+    #end
+         WHERE
+        #if( $config.logicDelete)
+         t.`is_delete`=1 and
+         #end
+         t.`id`=#{id}
+    </select>
+
+    <select id="selectMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        #foreach($column in $columns)
+            t.`$column.originalColumnName` #if($velocityCount != $columns.size()),#end
+        #end
+        #if( $config.joinQuery )
+            ,s.`username` as updateName
+            FROM ${tableName} t left join sys_user s on s.`id`= t.`update_id`
+        #else
+            FROM ${tableName}
+        #end
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            #if( $config.timeQuery)
+                <if test="stime != null and etime != null">
+                    and t.`create_time` BETWEEN #{stime} AND #{etime}
+                </if>
+            #end
+            #if( $config.logicDelete)
+                <if test=" offset != null ">
+                    and t.`is_delete`=1
+                </if>
+            #end
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        #if( $config.pagination)
+            <if test="offset != null and limit != null">
+                LIMIT ${offset}, ${limit}
+            </if>
+        #end
+    </select>
+
+    <select id="selectTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM ${tableName}
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            #if( $config.logicDelete)
+                <if test=" offset != null ">
+                    and `is_delete`=1
+                </if>
+            #end
+        </where>
+    </select>
+
+    <select id="recyleMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        #foreach($column in $columns)
+            t.`$column.originalColumnName` #if($velocityCount != $columns.size()),#end
+        #end
+        #if( $config.joinQuery )
+            ,s.`username` as updateName
+            FROM ${tableName} t left join sys_user s on s.`id`= t.`update_id`
+        #else
+            FROM ${tableName}
+        #end
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            #if( $config.timeQuery)
+                <if test="stime != null and etime != null">
+                    and t.`create_time` BETWEEN #{stime} AND #{etime}
+                </if>
+            #end
+            #if( $config.logicDelete)
+                <if test=" offset != null ">
+                    and t.`is_delete`=0
+                </if>
+            #end
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        #if( $config.pagination)
+            <if test="offset != null and limit != null">
+                LIMIT ${offset}, ${limit}
+            </if>
+        #end
+    </select>
+
+    <select id="recyleTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM ${tableName}
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            #if( $config.logicDelete)
+                <if test=" offset != null ">
+                    and `is_delete`=0
+                </if>
+            #end
+        </where>
+    </select>
+
+    <delete id="physicsDeleteBatch">
+        delete from ${tableName} where ${pk.columnName} in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="emptyRecyle">
+        delete from ${tableName} where is_delete=0
+    </delete>
+
+    <delete id="deleteBatch">
+        #if( $config.logicDelete)
+            update ${tableName} set t.`is_delete`=0
+        #else
+            delete from ${tableName}
+        #end
+        where ${pk.columnName} in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <resultMap type="map" id="DetailsMap">
+        #foreach($column in $columns)
+            <result property="${column.columnName}" column="${column.originalColumnName}"/>
+        #end
+        #if( $config.joinQuery )
+            <result property="updateName" column="updateName"/>
+            <result property="createName" column="createName"/>
+        #end
+    </resultMap>
+
+    <resultMap type="map" id="listResultMap">
+        <result property="id" column="id"/>
+        #foreach($column in $displayColumns)
+            <result property="${column.columnName}" column="${column.originalColumnName}"/>
+        #end
+    </resultMap>
+
+    <resultMap type="${package}.entity.${entityName}" id="BaseResultMap">
+        #foreach($column in $columns)
+            <result property="${column.columnName}" column="${column.originalColumnName}"/>
+        #end
+    </resultMap>
+
+    <sql id="Base_Column_List">
+#foreach($column in $columns)
+	    `$column.originalColumnName`#if($velocityCount != $columns.size()),#end
+    #end
+  	</sql>
+
+</mapper>

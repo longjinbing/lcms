@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>商品管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-steps :active="activeSetp" align-center>
+        <el-step title="基本信息"></el-step>
+        <el-step title="图片信息"></el-step>
+        <el-step title="详细描述"></el-step>
+        <el-step title="价格设置"></el-step>
+    </el-steps>
+    <el-row class="marginTop40">
+        <el-form v-loading="formLoading" :rules="addRules" ref="addForm"  :model="addFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <input id="goodsId" type="text" class="input-hidden" v-model="addFormData.id" th:value="${goodsId}">
+            <el-row class="step-window" v-show="activeSetp === 1 ">
+                <el-row class="step-body">
+                    <el-col :span="10">
+                        <el-form-item label="名称" prop="name">
+                            <el-input v-model="addFormData.name" placeholder="名称"></el-input>
+                        </el-form-item>
+                        <p class="el-form-item-help">商品名称，作为商品的标题，长度为1-30个文字</p>
+                        <el-form-item label="商品类别" prop="categoryId">
+                            <m-select
+                                    :changeOnSelect="false"
+                                    :options="categoryList"
+                                    :selected.sync="addFormData.categoryId">
+                            </m-select>
+                        </el-form-item>
+                        <p class="el-form-item-help">商品所属的类型，必须选择</p>
+                        <el-form-item label="品牌" prop="brandId">
+                            <m-select
+                                    :changeOnSelect="false"
+                                    :options="brandList"
+                                    :selected.sync="addFormData.brandId">
+                            </m-select>
+                        </el-form-item>
+                        <p class="el-form-item-help">商品品牌，如果有品牌，则填写</p>
+                        <el-form-item label="关键字" prop="keywords">
+                            <el-input v-model="addFormData.keywords" placeholder="关键字"></el-input>
+                        </el-form-item>
+                        <p class="el-form-item-help">用户搜索时搜索哪些信息可以检索到该商品</p>
+                    </el-col>
+                    <el-col :span="10" offset="2">
+                        <el-form-item label="状态">
+                            <el-radio-group v-model="addFormData.status" size="medium">
+                                <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                                 size="medium">{{item}}
+                                </el-radio-button>
+                            </el-radio-group>
+                        </el-form-item>
+                        <p class="el-form-item-help">处于上架状态中的商品才可以被用户搜索到，库存数量为0时用户将不能购买，为售完状态</p>
+                        <el-form-item label="推广信息" prop="promotionDesc">
+                            <el-input v-model="addFormData.promotionDesc" placeholder="推广信息"></el-input>
+                        </el-form-item>
+                        <p class="el-form-item-help">商品推广的标语，可能被选在商城首页中进行宣传</p>
+                        <el-form-item label="推广标签" prop="promotionTag">
+                            <el-input v-model="addFormData.promotionTag" placeholder="推广标签"></el-input>
+                        </el-form-item>
+                        <p class="el-form-item-help">商品的特性标签</p>
+                    </el-col>
+                </el-row>
+                <el-row class="setp-footer" :span="24">
+                    <el-row type="flex" justify="center">
+                        <el-button type="primary" @click="activeSetp++">下一步</el-button>
+                    </el-row>
+                </el-row>
+            </el-row>
+            <el-row class="step-window" v-show="activeSetp === 2 ">
+                <el-row class="step-body">
+                    <el-form-item label="商品主图">
+                        <upload-image :number="1"
+                                      :image.sync="addFormData.primaryPicUrl"></upload-image>
+                    </el-form-item>
+                    <p class="el-form-item-help">商品的正面图片，只能上传一张主图</p>
+                    <el-form-item label="图片列表">
+                        <upload-image :number="5"
+                                      :image.sync="addFormData.listPicUrl"></upload-image>
+                    </el-form-item>
+                    <p class="el-form-item-help">商品展示时的轮播图片，最大允许上传5张图片</p>
+                </el-row>
+                <el-row class="setp-footer" :span="24">
+                    <el-row type="flex" justify="center">
+                        <el-button type="primary" @click="activeSetp--">上一步</el-button>
+                        <el-button type="primary" @click="activeSetp++">下一步</el-button>
+                    </el-row>
+                </el-row>
+            </el-row>
+            <el-row class="step-window" v-show="activeSetp === 3 ">
+                <el-row class="step-body">
+                    <el-form-item label="商品描述" class="m-form-item">
+                        <u-editor :content.sync="addFormData.goodsDesc"></u-editor>
+                    </el-form-item>
+                    <p class="el-form-item-help">商品详情描述，将显示在商品详情页中，字数在5000字以内</p>
+                </el-row>
+                <el-row class="setp-footer" :span="24">
+                    <el-row type="flex" justify="center">
+                        <el-button type="primary" @click="activeSetp--">上一步</el-button>
+                        <el-button type="primary" @click="activeSetp++">下一步</el-button>
+                    </el-row>
+                </el-row>
+            </el-row>
+            <el-row class="step-window" v-show="activeSetp === 4 ">
+                <el-row class="step-body">
+                    <el-col :span="10">
+                        <el-form-item label="市场价格" prop="marketPrice">
+                            <el-input v-model="addFormData.marketPrice" placeholder="市场价格"></el-input>
+                        </el-form-item>
+                        <p class="el-form-item-help">促销活动中显示的市场价格</p>
+                        <el-form-item label="专柜价格" prop="counterPrice">
+                            <el-input v-model="addFormData.counterPrice" placeholder="专柜价格"></el-input>
+                        </el-form-item>
+                        <p class="el-form-item-help">促销活动中显示的市场价格，适合品牌商品</p>
+                        <el-form-item label="零售价格" prop="retailPrice">
+                            <el-input v-model="addFormData.retailPrice" placeholder="零售价格"></el-input>
+                        </el-form-item>
+                        <p class="el-form-item-help">促销活动中显示的零售价格，正常的市场价格</p>
+                        <el-form-item label="商品单位" prop="goodsUnit">
+                            <el-select v-model="addFormData.goodsUnit" placeholder="请选择">
+                                <el-option
+                                        v-for="item in goodsUnitList"
+                                        :key="item.value"
+                                        :label="item.item"
+                                :value="item.value">
+                                    {{item.item}}
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <p class="el-form-item-help">请选择实际单位</p>
+                    </el-col>
+                    <el-col :span="10" offset="2">
+                        <el-form-item label="单价" prop="unitPrice">
+                            <el-input v-model="addFormData.unitPrice" placeholder="单位价格，单价"></el-input>
+                        </el-form-item>
+                        <p class="el-form-item-help">单价为最后销售的价格</p>
+                        <el-form-item label="APP价格" prop="appExclusivePrice">
+                            <el-input v-model="addFormData.appExclusivePrice" placeholder="APP专享价"></el-input>
+                        </el-form-item>
+                        <p class="el-form-item-help">在APP端购买时的单价</p>
+                        <el-form-item label="APP专属" prop="isAppExclusive">
+                            <el-radio-group v-model="addFormData.isAppExclusive">
+                                <el-radio-button label="1">是</el-radio-button>
+                                <el-radio-button label="0">否</el-radio-button>
+                            </el-radio-group>
+                        </el-form-item>
+                        <p class="el-form-item-help">选择是APP专属后将只在APP端出售，同时也将提高在APP端的排名</p>
+                        <el-form-item label="库存量" prop="goodsNumber">
+                            <el-input-number v-model="addFormData.goodsNumber" :min="1" :max="100000" label="描述文字"></el-input-number>
+                        </el-form-item>
+                        <p class="el-form-item-help">库存数量应该与实际商品数量相等</p>
+                    </el-col>
+                </el-row>
+                <el-row class="setp-footer" :span="24">
+                    <el-row type="flex" justify="center">
+                        <el-button type="primary" @click="activeSetp--">上一步</el-button>
+                        <el-button type="primary" @click="saveFormData('addForm')">确&nbsp&nbsp&nbsp定</el-button>
+                    </el-row>
+                </el-row>
+            </el-row>
+        </el-form>
+    </el-row>
+</div>
+<div th:include="lib/js :: js"></div>
+<div th:include="lib/ueditor :: js"></div>
+<script th:src="@{/static/goods/editgoods.js}"></script>
+</body>
+</html>

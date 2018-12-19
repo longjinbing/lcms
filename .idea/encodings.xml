@@ -3,8 +3,16 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lcms-admin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lcms-cms" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lcms-cms-api" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lcms-common" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lcms-generator" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lcms-health" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lcms-health-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lcms-kaptcha" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lcms-shop" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lcms-shop-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lcms-shop-api" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lcms-sso" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lcms-web" charset="UTF-8" />
   </component>

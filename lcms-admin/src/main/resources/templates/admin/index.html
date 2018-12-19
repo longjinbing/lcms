@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html style="height: 100%;" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>LCMS后台管理系统</title>
+</head>
+<body style="height: 100%;">
+<div style="height: 100%;" id="main" v-cloak>
+    <div class="main-frame">
+        <el-col class="left-frame">
+            <img class="logo-img" th:src="@{/static/common/images/logo.png}">
+            <div class="user-info">
+            </div>
+            <el-menu unique-opened
+                     active-text-color="#1095fd"
+                     class="el-menu-vertical-demo">
+                <el-submenu v-for="(item,index) in menuList" :index="item.id" :key="index">
+                    <template slot="title">
+                        <i class="el-icon-location"></i>
+                        <span>{{item.label}}</span>
+                    </template>
+                    <el-menu-item-group v-if="item.children.length >0 ">
+                        <el-menu-item @click="menuItemClick(subItem)" v-for="(subItem,indexx) in item.children"
+                                      :index="subItem.id" :key="indexx"><i class="el-icon-location"></i>{{subItem.label}}
+                        </el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+        </el-col>
+        <el-col class="right-frame">
+            <el-row class="top-frame" type="flex" justify="end">
+                <div class="login-info">
+                <el-dropdown class="m-dropdown">
+  <span class="el-dropdown-link">
+      <el-badge size="mini" :value="200" :max="99" class="item">
+  <i class="el-icon-bell"></i>
+</el-badge>
+  </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item><a onclick='newtab("/admin/user.html","测试信息测试信息测试信息测试信息")'>测试信息</a>
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <el-dropdown class="m-dropdown">
+  <span class="el-dropdown-link">
+    <i class="el-icon-question"></i>
+  </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>使用手册</el-dropdown-item>
+                        <el-dropdown-item>疑难解答</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <el-dropdown>
+  <span class="el-dropdown-link">
+    欢迎您，{{userInfo.username}}<i class="el-icon-arrow-down el-icon--right"></i>
+  </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>我的账户信息</el-dropdown-item>
+                        <el-dropdown-item>修改密码</el-dropdown-item>
+                        <el-dropdown-item @click.native="logout">安全退出</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                </div>
+            </el-row>
+            <el-row class="tab-frame">
+                <el-col>
+                    <el-tabs id="el-tab" ref="elTab" v-model="currentTab" type="card" @tab-remove="removeTab" closable>
+                        <el-tab-pane
+                                v-for="item in tabList"
+                                :key="item.id" :name="item.id"
+                                :label="item.label">
+                            <iframe style="width: 100%;" scrolling="auto" frameborder="0"
+                                    :src="targetUrl('/'+item.url)"></iframe>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-col>
+            </el-row>
+        </el-col>
+    </div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/admin/index.js}"></script>
+</body>
+</html>

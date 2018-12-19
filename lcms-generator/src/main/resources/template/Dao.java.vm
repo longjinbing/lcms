@@ -1,0 +1,18 @@
+package ${package}.dao;
+
+import ${package}.entity.${entityName};
+import com.ljb.Base.BaseDao;
+import com.ljb.cache.DaoCache;
+import org.apache.ibatis.annotations.CacheNamespace;
+
+/**
+ * ${comment}Dao
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@CacheNamespace(implementation= DaoCache.class)
+public interface ${entityName}Dao extends BaseDao<${entityName},${pk.dataType}> {
+
+}

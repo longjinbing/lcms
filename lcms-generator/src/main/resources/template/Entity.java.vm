@@ -1,0 +1,46 @@
+package ${package}.entity;
+
+import javax.validation.constraints.*;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.ljb.Base.*;
+import com.ljb.model.*;
+import java.util.*;
+
+/**
+ * ${comment}实体
+ * 表名 ${tableName}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@TableName("${tableName}")
+public class ${entityName} extends BaseEntity{
+
+#foreach ($column in $entityColumns)
+    #if($column.dataType == "String" && !$column.nullable)
+        @NotBlank(message = "{field.not.blank}",groups = {AddGroup.class})
+        @NotBlank(message = "{field.not.blank}",groups = {UpdateGroup.class})
+    #end
+    #if($column.dataType == "Integer" && !$column.nullable)
+    @NotNull(message = "{field.not.blank}",groups = {AddGroup.class})
+    @NotNull(message = "{field.not.blank}",groups = {UpdateGroup.class})
+    #end
+    private ${column.dataType} ${column.columnName};
+#end
+#foreach ($column in $entityColumns)
+    /**
+     * 设置：${column.comment}
+     */
+    public void set${column.javaName}(${column.dataType} ${column.columnName}) {
+        this.${column.columnName} = ${column.columnName};
+    }
+
+    /**
+     * 获取：${column.comment}
+     */
+    public ${column.dataType} get${column.javaName}() {
+        return ${column.columnName};
+    }
+#end
+}

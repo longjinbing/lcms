@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/static/lib/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/static/lib/bootstrap-table/bootstrap-table.min.css}">
+    <link rel="stylesheet" th:href="@{/static/lib/layer/theme/default/layer.css}">
+    <link rel="stylesheet" th:href="@{/static/common/css/common.css}">
+</head>
+<body>
+<header class="header">
+    <div>
+        <a class="logo"><img class="logo-img" th:src="@{/static/common/images/logo.png}">
+            <!--<b class="logo-text">后台管理系统</b>--></a>
+    </div>
+    <div class="button-group">
+       <a th:href="@{/account/login}">登录</a><a th:href="@{/account/register}">注册</a>
+    </div>
+</header>
+
+<div class="container" layout:fragment="content">
+
+
+</div>
+
+<footer class="footer">
+    <div class="copyright">江西中医药大学计算机学院 版权所有©2016-2026</div>
+</footer>
+</body>
+</html>

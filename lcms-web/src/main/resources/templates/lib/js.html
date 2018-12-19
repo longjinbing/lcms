@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<div th:fragment="js">
+    <script th:src="@{/static/lib/axios/axios.min.js}"></script>
+    <script th:src="@{/static/lib/vue/vue.js}"></script>
+    <script>Vue.config.productionTip=false</script>
+    <script th:src="@{/static/lib/element/element.min.js}"></script>
+	<script th:src="@{/static/common/js/common.js}"></script>
+</div>
+</body>
+</html>

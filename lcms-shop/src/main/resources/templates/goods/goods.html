@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>商品管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-row class="toolbar">
+        <el-col :span="5">
+            <el-input placeholder="请输入内容" v-model="queryParams.text" size="medium" class="input-with-select">
+                <el-select v-model="queryParams.field" slot="prepend" placeholder="请选择">
+                    <el-option label="分类" value="categoryId"></el-option>
+                    <el-option label="SN编码" value="goodsSn"></el-option>
+                    <el-option label="名称" value="name"></el-option>
+                    <el-option label="品牌" value="brandId"></el-option>
+                    <el-option label="库存量" value="goodsNumber"></el-option>
+                    <el-option label="关键字" value="keywords"></el-option>
+                    <el-option label="好评度" value="goodsBrief"></el-option>
+                    <el-option label="商品描述" value="goodsDesc"></el-option>
+                    <el-option label="上架时间" value="addTime"></el-option>
+                    <el-option label="排序" value="orderNum"></el-option>
+                    <el-option label="属性分类" value="attributeCategory"></el-option>
+                    <el-option label="专柜价格" value="counterPrice"></el-option>
+                    <el-option label="附加价格" value="extraPrice"></el-option>
+                    <el-option label="是否上新" value="isNew"></el-option>
+                    <el-option label="商品单位" value="goodsUnit"></el-option>
+                    <el-option label="商品主图" value="primaryPicUrl"></el-option>
+                    <el-option label="商品列表图" value="listPicUrl"></el-option>
+                    <el-option label="零售价格" value="retailPrice"></el-option>
+                    <el-option label="销售量" value="sellVolume"></el-option>
+                    <el-option label="主sku　product_id" value="primaryProductId"></el-option>
+                    <el-option label="单位价格，单价" value="unitPrice"></el-option>
+                    <el-option label="推广信息" value="promotionDesc"></el-option>
+                    <el-option label="推广标签" value="promotionTag"></el-option>
+                    <el-option label="APP专享价" value="appExclusivePrice"></el-option>
+                    <el-option label="是否是APP专属" value="isAppExclusive"></el-option>
+                    <el-option label="" value="isLimited"></el-option>
+                    <el-option label="" value="isHot"></el-option>
+                    <el-option label="" value="marketPrice"></el-option>
+                    <el-option label="" value="createUserDeptId"></el-option>
+                </el-select>
+                <el-button slot="append" @click="loadData" icon="el-icon-search"></el-button>
+            </el-input>
+        </el-col>
+        <el-col :span="5" :offset="1">
+            <el-button type="success" @click="openTab('/shop/addgoods','添加商品')" size="medium"><i
+                    class="el-icon-plus">新增</i></el-button>
+            <el-button type="danger" @click="deleteData" size="medium"><i class="el-icon-delete"></i>删除</el-button>
+        </el-col>
+        <div th:replace="common/component :: toolbar"></div>
+    </el-row>
+    <el-row class="data">
+        <el-table size="mini"
+                  border
+                  v-loading="tableLoading"
+                  @selection-change="selectedChange"
+                  :data="tableData" :default-sort="{prop: 'id', order: 'desc'}"
+                  @sort-change="sortChange"
+                  style="width: 100%">
+            <el-table-column
+                    type="selection"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    type="index"
+                    width="50"
+                    label="序号"
+                    :index="generatorIndex">
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    label="名称"
+            width="250">
+                <template slot-scope="scope">
+                    {{limitText(scope.row.name,20)}}
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="goodsNumber"
+                    label="库存量">
+            </el-table-column>
+            <el-table-column
+                    prop="unitPrice"
+                    label="单价">
+            </el-table-column>
+            <el-table-column
+                    prop="appExclusivePrice"
+                    label="APP">
+            </el-table-column>
+            <el-table-column
+                    prop="orderNum"
+                    label="排序"
+                    width="135">
+                <div th:replace="common/component :: sortbar"></div>
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    label="状态"
+                    width="60">
+                <template slot-scope="scope">
+                    <el-tag
+                            size="mini" :type="tagTypeList[scope.row.status]">
+                        {{statusList[scope.row.status]}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="updateTime"
+                    label=""
+                    sortable="custom"
+                    width="150">
+            </el-table-column>
+            <el-table-column
+                    prop="updateName"
+                    label="操作人">
+            </el-table-column>
+            <el-table-column width="150"
+                             label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini" type="success"
+                            @click="openTab('/shop/editgoods/'+scope.row.id,'编辑商品')">编辑
+                    </el-button>
+                    <el-button
+                            size="mini" type="info"
+                            @click="detailsDialogOpen(scope.$index, scope.row)">详情
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+    <div th:replace="common/component :: pagination"></div>
+    <el-dialog top="4vh" title="新增" :modal="false" :open="addDialogOpen" :visible.sync="visible.addFormVisible">
+        <el-form v-loading="formLoading" :rules="addRules" ref="addForm" :model="addFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="分类" prop="categoryId">
+                        <el-input v-model="addFormData.categoryId" placeholder="分类"></el-input>
+                    </el-form-item>
+                    <el-form-item label="SN编码" prop="goodsSn">
+                        <el-input v-model="addFormData.goodsSn" placeholder="SN编码"></el-input>
+                    </el-form-item>
+                    <el-form-item label="名称" prop="name">
+                        <el-input v-model="addFormData.name" placeholder="名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="品牌" prop="brandId">
+                        <el-input v-model="addFormData.brandId" placeholder="品牌"></el-input>
+                    </el-form-item>
+                    <el-form-item label="库存量" prop="goodsNumber">
+                        <el-input v-model="addFormData.goodsNumber" placeholder="库存量"></el-input>
+                    </el-form-item>
+                    <el-form-item label="关键字" prop="keywords">
+                        <el-input v-model="addFormData.keywords" placeholder="关键字"></el-input>
+                    </el-form-item>
+                    <el-form-item label="好评度" prop="goodsBrief">
+                        <el-input v-model="addFormData.goodsBrief" placeholder="好评度"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品描述" prop="goodsDesc">
+                        <el-input v-model="addFormData.goodsDesc" placeholder="商品描述"></el-input>
+                    </el-form-item>
+                    <el-form-item label="上架时间" prop="addTime">
+                        <el-input v-model="addFormData.addTime" placeholder="上架时间"></el-input>
+                    </el-form-item>
+                    <el-form-item label="属性分类" prop="attributeCategory">
+                        <el-input v-model="addFormData.attributeCategory" placeholder="属性分类"></el-input>
+                    </el-form-item>
+                    <el-form-item label="专柜价格" prop="counterPrice">
+                        <el-input v-model="addFormData.counterPrice" placeholder="专柜价格"></el-input>
+                    </el-form-item>
+                    <el-form-item label="附加价格" prop="extraPrice">
+                        <el-input v-model="addFormData.extraPrice" placeholder="附加价格"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否上新" prop="isNew">
+                        <el-input v-model="addFormData.isNew" placeholder="是否上新"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品单位" prop="goodsUnit">
+                        <el-input v-model="addFormData.goodsUnit" placeholder="商品单位"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品主图" prop="primaryPicUrl">
+                        <el-input v-model="addFormData.primaryPicUrl" placeholder="商品主图"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品列表图" prop="listPicUrl">
+                        <el-input v-model="addFormData.listPicUrl" placeholder="商品列表图"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="零售价格" prop="retailPrice">
+                        <el-input v-model="addFormData.retailPrice" placeholder="零售价格"></el-input>
+                    </el-form-item>
+                    <el-form-item label="销售量" prop="sellVolume">
+                        <el-input v-model="addFormData.sellVolume" placeholder="销售量"></el-input>
+                    </el-form-item>
+                    <el-form-item label="主sku　product_id" prop="primaryProductId">
+                        <el-input v-model="addFormData.primaryProductId" placeholder="主sku　product_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="单位价格，单价" prop="unitPrice">
+                        <el-input v-model="addFormData.unitPrice" placeholder="单位价格，单价"></el-input>
+                    </el-form-item>
+                    <el-form-item label="推广信息" prop="promotionDesc">
+                        <el-input v-model="addFormData.promotionDesc" placeholder="推广信息"></el-input>
+                    </el-form-item>
+                    <el-form-item label="推广标签" prop="promotionTag">
+                        <el-input v-model="addFormData.promotionTag" placeholder="推广标签"></el-input>
+                    </el-form-item>
+                    <el-form-item label="APP专享价" prop="appExclusivePrice">
+                        <el-input v-model="addFormData.appExclusivePrice" placeholder="APP专享价"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否是APP专属" prop="isAppExclusive">
+                        <el-input v-model="addFormData.isAppExclusive" placeholder="是否是APP专属"></el-input>
+                    </el-form-item>
+                    <el-form-item label="" prop="isLimited">
+                        <el-input v-model="addFormData.isLimited" placeholder=""></el-input>
+                    </el-form-item>
+                    <el-form-item label="" prop="isHot">
+                        <el-input v-model="addFormData.isHot" placeholder=""></el-input>
+                    </el-form-item>
+                    <el-form-item label="" prop="marketPrice">
+                        <el-input v-model="addFormData.marketPrice" placeholder=""></el-input>
+                    </el-form-item>
+                    <el-form-item label="" prop="createUserDeptId">
+                        <el-input v-model="addFormData.createUserDeptId" placeholder=""></el-input>
+                    </el-form-item>
+                    <el-form-item label="">
+                        <el-radio-group v-model="addFormData.status" size="medium">
+                            <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.addFormVisible = false">取 消</el-button>
+            <el-button @click="resetForm('addForm')">重置</el-button>
+            <el-button type="primary" @click="saveFormData('addForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="修改" :modal="false" :visible.sync="visible.editFormVisible">
+        <el-form v-loading="formLoading" ref="editForm" :rules="addRules" :model="editFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="分类" prop="categoryId">
+                        <el-input v-model="editFormData.categoryId" placeholder="分类"></el-input>
+                    </el-form-item>
+                    <el-form-item label="SN编码" prop="goodsSn">
+                        <el-input v-model="editFormData.goodsSn" placeholder="SN编码"></el-input>
+                    </el-form-item>
+                    <el-form-item label="名称" prop="name">
+                        <el-input v-model="editFormData.name" placeholder="名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="品牌" prop="brandId">
+                        <el-input v-model="editFormData.brandId" placeholder="品牌"></el-input>
+                    </el-form-item>
+                    <el-form-item label="库存量" prop="goodsNumber">
+                        <el-input v-model="editFormData.goodsNumber" placeholder="库存量"></el-input>
+                    </el-form-item>
+                    <el-form-item label="关键字" prop="keywords">
+                        <el-input v-model="editFormData.keywords" placeholder="关键字"></el-input>
+                    </el-form-item>
+                    <el-form-item label="好评度" prop="goodsBrief">
+                        <el-input v-model="editFormData.goodsBrief" placeholder="好评度"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品描述" prop="goodsDesc">
+                        <el-input v-model="editFormData.goodsDesc" placeholder="商品描述"></el-input>
+                    </el-form-item>
+                    <el-form-item label="上架时间" prop="addTime">
+                        <el-input v-model="editFormData.addTime" placeholder="上架时间"></el-input>
+                    </el-form-item>
+                    <el-form-item label="属性分类" prop="attributeCategory">
+                        <el-input v-model="editFormData.attributeCategory" placeholder="属性分类"></el-input>
+                    </el-form-item>
+                    <el-form-item label="专柜价格" prop="counterPrice">
+                        <el-input v-model="editFormData.counterPrice" placeholder="专柜价格"></el-input>
+                    </el-form-item>
+                    <el-form-item label="附加价格" prop="extraPrice">
+                        <el-input v-model="editFormData.extraPrice" placeholder="附加价格"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否上新" prop="isNew">
+                        <el-input v-model="editFormData.isNew" placeholder="是否上新"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品单位" prop="goodsUnit">
+                        <el-input v-model="editFormData.goodsUnit" placeholder="商品单位"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品主图" prop="primaryPicUrl">
+                        <el-input v-model="editFormData.primaryPicUrl" placeholder="商品主图"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品列表图" prop="listPicUrl">
+                        <el-input v-model="editFormData.listPicUrl" placeholder="商品列表图"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="零售价格" prop="retailPrice">
+                        <el-input v-model="editFormData.retailPrice" placeholder="零售价格"></el-input>
+                    </el-form-item>
+                    <el-form-item label="销售量" prop="sellVolume">
+                        <el-input v-model="editFormData.sellVolume" placeholder="销售量"></el-input>
+                    </el-form-item>
+                    <el-form-item label="主sku　product_id" prop="primaryProductId">
+                        <el-input v-model="editFormData.primaryProductId" placeholder="主sku　product_id"></el-input>
+                    </el-form-item>
+                    <el-form-item label="单位价格，单价" prop="unitPrice">
+                        <el-input v-model="editFormData.unitPrice" placeholder="单位价格，单价"></el-input>
+                    </el-form-item>
+                    <el-form-item label="推广信息" prop="promotionDesc">
+                        <el-input v-model="editFormData.promotionDesc" placeholder="推广信息"></el-input>
+                    </el-form-item>
+                    <el-form-item label="推广标签" prop="promotionTag">
+                        <el-input v-model="editFormData.promotionTag" placeholder="推广标签"></el-input>
+                    </el-form-item>
+                    <el-form-item label="APP专享价" prop="appExclusivePrice">
+                        <el-input v-model="editFormData.appExclusivePrice" placeholder="APP专享价"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否是APP专属" prop="isAppExclusive">
+                        <el-input v-model="editFormData.isAppExclusive" placeholder="是否是APP专属"></el-input>
+                    </el-form-item>
+                    <el-form-item label="" prop="isLimited">
+                        <el-input v-model="editFormData.isLimited" placeholder=""></el-input>
+                    </el-form-item>
+                    <el-form-item label="" prop="isHot">
+                        <el-input v-model="editFormData.isHot" placeholder=""></el-input>
+                    </el-form-item>
+                    <el-form-item label="" prop="marketPrice">
+                        <el-input v-model="editFormData.marketPrice" placeholder=""></el-input>
+                    </el-form-item>
+                    <el-form-item label="" prop="createUserDeptId">
+                        <el-input v-model="editFormData.createUserDeptId" placeholder=""></el-input>
+                    </el-form-item>
+                    <el-form-item label="">
+                        <el-radio-group v-model="editFormData.status" size="medium">
+                            <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.editFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateFormData('editForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="详情" :modal="false" :visible.sync="visible.detailsVisible">
+        <el-row v-loading="formLoading">
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>分类:</td>
+                        <td>{{detailsData.categoryId}}</td>
+                    </tr>
+                    <tr>
+                        <td>SN编码:</td>
+                        <td>{{detailsData.goodsSn}}</td>
+                    </tr>
+                    <tr>
+                        <td>名称:</td>
+                        <td>{{detailsData.name}}</td>
+                    </tr>
+                    <tr>
+                        <td>品牌:</td>
+                        <td>{{detailsData.brandId}}</td>
+                    </tr>
+                    <tr>
+                        <td>库存量:</td>
+                        <td>{{detailsData.goodsNumber}}</td>
+                    </tr>
+                    <tr>
+                        <td>关键字:</td>
+                        <td>{{detailsData.keywords}}</td>
+                    </tr>
+                    <tr>
+                        <td>好评度:</td>
+                        <td>{{detailsData.goodsBrief}}</td>
+                    </tr>
+                    <tr>
+                        <td>商品描述:</td>
+                        <td>{{detailsData.goodsDesc}}</td>
+                    </tr>
+                    <tr>
+                        <td>上架时间:</td>
+                        <td>{{detailsData.addTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>属性分类:</td>
+                        <td>{{detailsData.attributeCategory}}</td>
+                    </tr>
+                    <tr>
+                        <td>专柜价格:</td>
+                        <td>{{detailsData.counterPrice}}</td>
+                    </tr>
+                    <tr>
+                        <td>附加价格:</td>
+                        <td>{{detailsData.extraPrice}}</td>
+                    </tr>
+                    <tr>
+                        <td>是否上新:</td>
+                        <td>{{detailsData.isNew}}</td>
+                    </tr>
+                    <tr>
+                        <td>商品单位:</td>
+                        <td>{{detailsData.goodsUnit}}</td>
+                    </tr>
+                    <tr>
+                        <td>商品主图:</td>
+                        <td>{{detailsData.primaryPicUrl}}</td>
+                    </tr>
+                    <tr>
+                        <td>商品列表图:</td>
+                        <td>{{detailsData.listPicUrl}}</td>
+                    </tr>
+                    <tr>
+                        <td>零售价格:</td>
+                        <td>{{detailsData.retailPrice}}</td>
+                    </tr>
+                    <tr>
+                        <td>销售量:</td>
+                        <td>{{detailsData.sellVolume}}</td>
+                    </tr>
+                    <tr>
+                        <td>主sku　product_id:</td>
+                        <td>{{detailsData.primaryProductId}}</td>
+                    </tr>
+                    <tr>
+                        <td>单位价格，单价:</td>
+                        <td>{{detailsData.unitPrice}}</td>
+                    </tr>
+                    <tr>
+                        <td>推广信息:</td>
+                        <td>{{detailsData.promotionDesc}}</td>
+                    </tr>
+                    <tr>
+                        <td>推广标签:</td>
+                        <td>{{detailsData.promotionTag}}</td>
+                    </tr>
+                    <tr>
+                        <td>APP专享价:</td>
+                        <td>{{detailsData.appExclusivePrice}}</td>
+                    </tr>
+                    <tr>
+                        <td>是否是APP专属:</td>
+                        <td>{{detailsData.isAppExclusive}}</td>
+                    </tr>
+                    <tr>
+                        <td>:</td>
+                        <td>{{detailsData.isLimited}}</td>
+                    </tr>
+                    <tr>
+                        <td>:</td>
+                        <td>{{detailsData.isHot}}</td>
+                    </tr>
+                    <tr>
+                        <td>:</td>
+                        <td>{{detailsData.marketPrice}}</td>
+                    </tr>
+                    <tr>
+                        <td>:</td>
+                        <td>{{detailsData.createUserDeptId}}</td>
+                    </tr>
+                    <tr>
+                        <td>:</td>
+                        <td>
+                            <el-tag size="mini" :type="tagTypeList[detailsData.status]">
+                                {{statusList[detailsData.status]}}
+                            </el-tag>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>:</td>
+                        <td>{{detailsData.createTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>:</td>
+                        <td>{{detailsData.updateTime}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-col>
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>操作人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.createId)">{{detailsData.createName}}</a></td>
+                    </tr>
+                    <tr>
+                        <td>更新人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.updateId)">{{detailsData.updateName}}</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.detailsVisible = false">关闭</el-button>
+        </div>
+    </el-dialog>
+    <div th:replace="common/component :: exportDialog"></div>
+    <div th:replace="common/component :: userInfo"></div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/goods/goods.js}"></script>
+</body>
+</html>

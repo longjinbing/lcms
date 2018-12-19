@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>目录管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <el-row :gutter="20">
+        <div class="category-item">
+                <button @click="visible.addFormVisible = true" class="vertial-center-button">+</button>
+        </div>
+        <div class="category-item" v-for="(item,index) in tableData">
+            <h4 class="category-name">{{item.name}}</h4>
+            <p  class="category-remark">{{item.remark}}</p>
+            <el-row type="flex" justify="center">
+                <el-button size="mini" @click="openTab('cms/articlelist/'+item.id,item.name)">浏览</el-button>
+                <el-button size="mini" @click="updateDialogOpen(item)">编辑</el-button>
+                <el-button size="mini" @click="deleteDataRow(item.id)" >删除</el-button>
+            </el-row>
+            <el-row class="category-status" type="flex" justify="center">
+                    <el-tag
+                            size="mini" :type="tagTypeList[item.status]">
+                        {{statusList[item.status]}}
+                    </el-tag>
+            </el-row>
+        </div>
+    </el-row>
+
+    <div th:replace="common/component :: pagination"></div>
+    <el-dialog top="4vh" title="新增" :modal="false" :open="addDialogOpen" :visible.sync="visible.addFormVisible">
+        <el-form v-loading="formLoading" :rules="addRules" ref="addForm" :model="addFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="名称" prop="name">
+                        <el-input v-model="addFormData.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="描述" prop="remark">
+                        <el-input type="textarea"
+                        :rows="2" v-model="addFormData.remark"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item size="medium" label="排序">
+                        <el-input-number v-model="addFormData.orderNum" :min="1"
+                                         :max="10000"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="状态">
+                        <el-radio-group v-model="addFormData.status" size="medium">
+                            <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.addFormVisible = false">取 消</el-button>
+            <el-button @click="resetForm('addForm')">重置</el-button>
+            <el-button type="primary" @click="saveFormData('addForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="修改" :modal="false" :visible.sync="visible.editFormVisible">
+        <el-form v-loading="formLoading" ref="editForm" :rules="addRules" :model="editFormData" label-width="80px"
+                 size="medium" hide-required-asterisk>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="名称" prop="name">
+                        <el-input v-model="editFormData.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="描述" prop="remark">
+                        <el-input type="textarea"
+                                  :rows="2" v-model="editFormData.remark"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item size="medium" label="排序">
+                        <el-input-number v-model="editFormData.orderNum" :min="1"
+                                         :max="10000"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="状态">
+                        <el-radio-group v-model="editFormData.status" size="medium">
+                            <el-radio-button v-for="(item,index) in statusList" :label="index"
+                                             size="medium">{{item}}
+                            </el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.editFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateFormData('editForm')">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog top="4vh" title="详情" :modal="false" :visible.sync="visible.detailsVisible">
+        <el-row v-loading="formLoading">
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>父Id:</td>
+                        <td>{{detailsData.parentId}}</td>
+                    </tr>
+                    <tr>
+                        <td>名称:</td>
+                        <td>{{detailsData.name}}</td>
+                    </tr>
+                    <tr>
+                        <td>:</td>
+                        <td>{{detailsData.remark}}</td>
+                    </tr>
+                    <tr>
+                        <td>排序:</td>
+                        <td>{{detailsData.orderNum}}</td>
+                    </tr>
+                    <tr>
+                        <td>状态:</td>
+                        <td>
+                            <el-tag size="mini" :type="tagTypeList[detailsData.status]">
+                                {{statusList[detailsData.status]}}
+                            </el-tag>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>创建时间:</td>
+                        <td>{{detailsData.createTime}}</td>
+                    </tr>
+                    <tr>
+                        <td>:</td>
+                        <td>{{detailsData.updateTime}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-col>
+            <el-col :span="12">
+                <table class="details-table">
+                    <tbody>
+                    <tr>
+                        <td>操作人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.createId)">{{detailsData.createName}}</a></td>
+                    </tr>
+                    <tr>
+                        <td>更新人:</td>
+                        <td><a class="m-link"
+                               @click="queryUserInfo(detailsData.updateId)">{{detailsData.updateName}}</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </el-col>
+        </el-row>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible.detailsVisible = false">关闭</el-button>
+        </div>
+    </el-dialog>
+    <div th:replace="common/component :: exportDialog"></div>
+    <div th:replace="common/component :: userInfo"></div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/cms/cateogry.js}"></script>
+</body>
+</html>

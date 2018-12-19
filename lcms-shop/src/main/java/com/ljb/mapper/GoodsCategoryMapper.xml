@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljb.dao.GoodsCategoryDao">
+    <cache-ref namespace="com.ljb.dao.GoodsCategoryDao"></cache-ref>
+    <update id="updateByIdSelective" parameterType="com.ljb.entity.GoodsCategory">
+        update shop_goods_category
+        <set>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="keywords != null">
+                `keywords` = #{keywords},
+            </if>
+            <if test="frontDesc != null">
+                `front_desc` = #{frontDesc},
+            </if>
+            <if test="parentId != null">
+                `parent_id` = #{parentId},
+            </if>
+            <if test="orderNum != null">
+                `order_num` = #{orderNum},
+            </if>
+            <if test="showIndex != null">
+                `show_index` = #{showIndex},
+            </if>
+            <if test="bannerUrl != null">
+                `banner_url` = #{bannerUrl},
+            </if>
+            <if test="iconUrl != null">
+                `icon_url` = #{iconUrl},
+            </if>
+            <if test="imgUrl != null">
+                `img_url` = #{imgUrl},
+            </if>
+            <if test="wapBannerUrl != null">
+                `wap_banner_url` = #{wapBannerUrl},
+            </if>
+            <if test="level != null">
+                `level` = #{level},
+            </if>
+            <if test="type != null">
+                `type` = #{type},
+            </if>
+            <if test="frontName != null">
+                `front_name` = #{frontName},
+            </if>
+            <if test="isDelete != null">
+                `is_delete` = #{isDelete},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="createId != null">
+                `create_id` = #{createId},
+            </if>
+            <if test="createTime != null">
+                `create_time` = #{createTime},
+            </if>
+            <if test="updateId != null">
+                `update_id` = #{updateId},
+            </if>
+            <if test="updateTime != null">
+                `update_time` = #{updateTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO shop_goods_category
+        (
+        `id` ,
+        `name` ,
+        `keywords` ,
+        `front_desc` ,
+        `parent_id` ,
+        `order_num` ,
+        `show_index` ,
+        `banner_url` ,
+        `icon_url` ,
+        `img_url` ,
+        `wap_banner_url` ,
+        `level` ,
+        `type` ,
+        `front_name` ,
+        `is_delete` ,
+        `status` ,
+        `create_id` ,
+        `create_time` ,
+        `update_id` ,
+        `update_time` )
+        values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (
+            #{item.id},
+            #{item.name},
+            #{item.keywords},
+            #{item.frontDesc},
+            #{item.parentId},
+            #{item.orderNum},
+            #{item.showIndex},
+            #{item.bannerUrl},
+            #{item.iconUrl},
+            #{item.imgUrl},
+            #{item.wapBannerUrl},
+            #{item.level},
+            #{item.type},
+            #{item.frontName},
+            #{item.isDelete},
+            #{item.status},
+            #{item.createId},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateTime} )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="java.util.List">>
+        <foreach item="item" index="index" collection="list" separator=";">
+            update shop_goods_category
+            <set>
+                <if test="item.name != null">`name` =
+                    #{item.name} ,
+                </if>
+                <if test="item.keywords != null">`keywords` =
+                    #{item.keywords} ,
+                </if>
+                <if test="item.frontDesc != null">`front_desc` =
+                    #{item.frontDesc} ,
+                </if>
+                <if test="item.parentId != null">`parent_id` =
+                    #{item.parentId} ,
+                </if>
+                <if test="item.orderNum != null">`order_num` =
+                    #{item.orderNum} ,
+                </if>
+                <if test="item.showIndex != null">`show_index` =
+                    #{item.showIndex} ,
+                </if>
+                <if test="item.bannerUrl != null">`banner_url` =
+                    #{item.bannerUrl} ,
+                </if>
+                <if test="item.iconUrl != null">`icon_url` =
+                    #{item.iconUrl} ,
+                </if>
+                <if test="item.imgUrl != null">`img_url` =
+                    #{item.imgUrl} ,
+                </if>
+                <if test="item.wapBannerUrl != null">`wap_banner_url` =
+                    #{item.wapBannerUrl} ,
+                </if>
+                <if test="item.level != null">`level` =
+                    #{item.level} ,
+                </if>
+                <if test="item.type != null">`type` =
+                    #{item.type} ,
+                </if>
+                <if test="item.frontName != null">`front_name` =
+                    #{item.frontName} ,
+                </if>
+                <if test="item.isDelete != null">`is_delete` =
+                    #{item.isDelete} ,
+                </if>
+                <if test="item.status != null">`status` =
+                    #{item.status} ,
+                </if>
+                <if test="item.createId != null">`create_id` =
+                    #{item.createId} ,
+                </if>
+                <if test="item.createTime != null">`create_time` =
+                    #{item.createTime} ,
+                </if>
+                <if test="item.updateId != null">`update_id` =
+                    #{item.updateId} ,
+                </if>
+                <if test="item.updateTime != null">`update_time` =
+                    #{item.updateTime}
+                </if>
+            </set>
+            where `id` = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectMapById" resultMap="DetailsMap">
+        SELECT
+                t.`id` ,            t.`name` ,            t.`keywords` ,            t.`front_desc` ,            t.`parent_id` ,            t.`order_num` ,            t.`show_index` ,            t.`banner_url` ,            t.`icon_url` ,            t.`img_url` ,            t.`wap_banner_url` ,            t.`level` ,            t.`type` ,            t.`front_name` ,            t.`is_delete` ,            t.`status` ,            t.`create_id` ,            t.`create_time` ,            t.`update_id` ,            t.`update_time`                     ,s.`username` as createName,
+        s2.`username` as updateName
+        FROM shop_goods_category t left join sys_user s on s.`id`= t.`create_id` LEFT JOIN sys_user s2 ON s2.`id`=t.`update_id`
+                 WHERE
+                 t.`is_delete`=1 and
+                  t.`id`=#{id}
+    </select>
+
+    <select id="selectMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`name` , t.`keywords` , t.`front_desc` , t.`parent_id` , t.`order_num` , t.`show_index` ,
+        t.`banner_url` , t.`icon_url` , t.`img_url` , t.`wap_banner_url` , t.`level` , t.`type` , t.`front_name` ,
+        t.`is_delete` , t.`status` , t.`create_id` , t.`create_time` , t.`update_id` , t.`update_time` ,s.`username` as
+        updateName
+        FROM shop_goods_category t left join sys_user s on s.`id`= t.`update_id`
+       where t.`is_delete`=1
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="selectTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_goods_category
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=1
+            </if>
+        </where>
+    </select>
+
+    <select id="recyleMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`name` , t.`keywords` , t.`front_desc` , t.`parent_id` , t.`order_num` , t.`show_index` ,
+        t.`banner_url` , t.`icon_url` , t.`img_url` , t.`wap_banner_url` , t.`level` , t.`type` , t.`front_name` ,
+        t.`is_delete` , t.`status` , t.`create_id` , t.`create_time` , t.`update_id` , t.`update_time` ,s.`username` as
+        updateName
+        FROM shop_goods_category t left join sys_user s on s.`id`= t.`update_id`
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+                and t.`is_delete`=0
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="recyleTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_goods_category
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=0
+            </if>
+        </where>
+    </select>
+
+    <delete id="physicsDeleteBatch">
+        delete from shop_goods_category where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="emptyRecyle">
+        delete from shop_goods_category where is_delete=0
+    </delete>
+
+    <delete id="deleteBatch">
+        update shop_goods_category set t.`is_delete`=0
+        where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <resultMap type="map" id="DetailsMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="keywords" column="keywords"/>
+        <result property="frontDesc" column="front_desc"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="showIndex" column="show_index"/>
+        <result property="bannerUrl" column="banner_url"/>
+        <result property="iconUrl" column="icon_url"/>
+        <result property="imgUrl" column="img_url"/>
+        <result property="wapBannerUrl" column="wap_banner_url"/>
+        <result property="level" column="level"/>
+        <result property="type" column="type"/>
+        <result property="frontName" column="front_name"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="status" column="status"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateName" column="updateName"/>
+        <result property="createName" column="createName"/>
+    </resultMap>
+
+    <resultMap type="map" id="listResultMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="keywords" column="keywords"/>
+        <result property="frontDesc" column="front_desc"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="showIndex" column="show_index"/>
+        <result property="bannerUrl" column="banner_url"/>
+        <result property="iconUrl" column="icon_url"/>
+        <result property="imgUrl" column="img_url"/>
+        <result property="wapBannerUrl" column="wap_banner_url"/>
+        <result property="level" column="level"/>
+        <result property="type" column="type"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="frontName" column="front_name"/>
+        <result property="status" column="status"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateName" column="updateName"/>
+    </resultMap>
+
+    <resultMap type="com.ljb.entity.GoodsCategory" id="BaseResultMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="keywords" column="keywords"/>
+        <result property="frontDesc" column="front_desc"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="showIndex" column="show_index"/>
+        <result property="bannerUrl" column="banner_url"/>
+        <result property="iconUrl" column="icon_url"/>
+        <result property="imgUrl" column="img_url"/>
+        <result property="wapBannerUrl" column="wap_banner_url"/>
+        <result property="level" column="level"/>
+        <result property="type" column="type"/>
+        <result property="frontName" column="front_name"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="status" column="status"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+	    `id`,    	    `name`,    	    `keywords`,    	    `front_desc`,    	    `parent_id`,    	    `order_num`,    	    `show_index`,    	    `banner_url`,    	    `icon_url`,    	    `img_url`,    	    `wap_banner_url`,    	    `level`,    	    `type`,    	    `front_name`,    	    `is_delete`,    	    `status`,    	    `create_id`,    	    `create_time`,    	    `update_id`,    	    `update_time`      	</sql>
+
+</mapper>

@@ -7,21 +7,37 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="lcms-admin" />
+        <module name="lcms-cms" />
+        <module name="lcms-cms-api" />
         <module name="lcms-common" />
         <module name="lcms-generator" />
+        <module name="lcms-health" />
+        <module name="lcms-health-api" />
+        <module name="lcms-kaptcha" />
+        <module name="lcms-shop" />
+        <module name="lcms-shop-api" />
         <module name="lcms-sso" />
         <module name="lcms-ui" />
         <module name="lcms-web" />
+        <module name="lcmsshopapi" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="lcms" target="1.8" />
       <module name="lcms-admin" target="1.8" />
+      <module name="lcms-cms" target="1.8" />
+      <module name="lcms-cms-api" target="1.8" />
       <module name="lcms-common" target="1.8" />
       <module name="lcms-generator" target="1.8" />
+      <module name="lcms-health" target="1.8" />
+      <module name="lcms-health-api" target="1.8" />
+      <module name="lcms-kaptcha" target="1.8" />
+      <module name="lcms-shop" target="1.8" />
+      <module name="lcms-shop-api" target="1.8" />
       <module name="lcms-sso" target="1.8" />
       <module name="lcms-ui" target="1.8" />
       <module name="lcms-web" target="1.8" />
+      <module name="lcmsshopapi" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

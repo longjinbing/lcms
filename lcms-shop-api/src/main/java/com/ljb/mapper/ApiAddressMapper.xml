@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ljb.dao.ApiAddressDao">
+    <update id="updateByIdSelective" parameterType="com.ljb.entity.ApiAddress">
+        update shop_address
+        <set>
+            <if test="userId != null">
+                `user_id` = #{userId},
+            </if>
+            <if test="userName != null">
+                `user_name` = #{userName},
+            </if>
+            <if test="telNumber != null">
+                `tel_number` = #{telNumber},
+            </if>
+            <if test="postalCode != null">
+                `postal_code` = #{postalCode},
+            </if>
+            <if test="nationalCode != null">
+                `national_code` = #{nationalCode},
+            </if>
+            <if test="provinceName != null">
+                `province_name` = #{provinceName},
+            </if>
+            <if test="cityName != null">
+                `city_name` = #{cityName},
+            </if>
+            <if test="countyName != null">
+                `county_name` = #{countyName},
+            </if>
+            <if test="detailInfo != null">
+                `detail_info` = #{detailInfo},
+            </if>
+            <if test="isDelete != null">
+                `is_delete` = #{isDelete},
+            </if>
+            <if test="status != null">
+                `status` = #{status},
+            </if>
+            <if test="createId != null">
+                `create_id` = #{createId},
+            </if>
+            <if test="createTime != null">
+                `create_time` = #{createTime},
+            </if>
+            <if test="updateId != null">
+                `update_id` = #{updateId},
+            </if>
+            <if test="updateTime != null">
+                `update_time` = #{updateTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <insert id="saveBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO shop_address
+        (
+        `id` ,
+        `user_id` ,
+        `user_name` ,
+        `tel_number` ,
+        `postal_code` ,
+        `national_code` ,
+        `province_name` ,
+        `city_name` ,
+        `county_name` ,
+        `detail_info` ,
+        `is_delete` ,
+        `status` ,
+        `create_id` ,
+        `create_time` ,
+        `update_id` ,
+        `update_time` )
+        values
+        <foreach item="item" index="index" collection="list"
+                 separator=",">
+            (
+            #{item.id},
+            #{item.userId},
+            #{item.userName},
+            #{item.telNumber},
+            #{item.postalCode},
+            #{item.nationalCode},
+            #{item.provinceName},
+            #{item.cityName},
+            #{item.countyName},
+            #{item.detailInfo},
+            #{item.isDelete},
+            #{item.status},
+            #{item.createId},
+            #{item.createTime},
+            #{item.updateId},
+            #{item.updateTime} )
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="java.util.List">>
+        <foreach item="item" index="index" collection="list" separator=";">
+            update shop_address
+            <set>
+                <if test="item.id != null">`id` =
+                    #{item.id} ,
+                </if>
+                <if test="item.userId != null">`user_id` =
+                    #{item.userId} ,
+                </if>
+                <if test="item.userName != null">`user_name` =
+                    #{item.userName} ,
+                </if>
+                <if test="item.telNumber != null">`tel_number` =
+                    #{item.telNumber} ,
+                </if>
+                <if test="item.postalCode != null">`postal_code` =
+                    #{item.postalCode} ,
+                </if>
+                <if test="item.nationalCode != null">`national_code` =
+                    #{item.nationalCode} ,
+                </if>
+                <if test="item.provinceName != null">`province_name` =
+                    #{item.provinceName} ,
+                </if>
+                <if test="item.cityName != null">`city_name` =
+                    #{item.cityName} ,
+                </if>
+                <if test="item.countyName != null">`county_name` =
+                    #{item.countyName} ,
+                </if>
+                <if test="item.detailInfo != null">`detail_info` =
+                    #{item.detailInfo} ,
+                </if>
+                <if test="item.isDelete != null">`is_delete` =
+                    #{item.isDelete} ,
+                </if>
+                <if test="item.status != null">`status` =
+                    #{item.status} ,
+                </if>
+                <if test="item.createId != null">`create_id` =
+                    #{item.createId} ,
+                </if>
+                <if test="item.createTime != null">`create_time` =
+                    #{item.createTime} ,
+                </if>
+                <if test="item.updateId != null">`update_id` =
+                    #{item.updateId} ,
+                </if>
+                <if test="item.updateTime != null">`update_time` =
+                    #{item.updateTime}
+                </if>
+            </set>
+            where `id` = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectMapById" resultMap="DetailsMap">
+        SELECT
+                t.`id` ,            t.`user_id` ,            t.`user_name` ,            t.`tel_number` ,            t.`postal_code` ,            t.`national_code` ,            t.`province_name` ,            t.`city_name` ,            t.`county_name` ,            t.`detail_info` ,            t.`is_delete` ,            t.`status` ,            t.`create_id` ,            t.`create_time` ,            t.`update_id` ,            t.`update_time`                     ,s.`username` as createName,
+        s2.`username` as updateName
+        FROM shop_address t left join sys_user s on s.`id`= t.`create_id` LEFT JOIN sys_user s2 ON s2.`id`=t.`update_id`
+                 WHERE
+                 t.`is_delete`=1 and
+                  t.`id`=#{id}
+    </select>
+
+    <select id="selectMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`user_id` , t.`user_name` , t.`tel_number` , t.`postal_code` , t.`national_code` , t.`province_name`
+        , t.`city_name` , t.`county_name` , t.`detail_info`
+        FROM shop_address t left join sys_user s on s.`id`= t.`update_id`
+        where t.`user_id`=#{user_id} and t.`is_delete`=1
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="selectTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_address
+        where t.`user_id`=#{user_id} and t.`is_delete`=1
+    </select>
+
+    <select id="recyleMapList" parameterType="map" resultMap="listResultMap">
+        SELECT
+        t.`id` , t.`user_id` , t.`user_name` , t.`tel_number` , t.`postal_code` , t.`national_code` , t.`province_name`
+        , t.`city_name` , t.`county_name` , t.`detail_info` , t.`is_delete` , t.`status` , t.`create_id` ,
+        t.`create_time` , t.`update_id` , t.`update_time` ,s.`username` as updateName
+        FROM shop_address t left join sys_user s on s.`id`= t.`update_id`
+        <where>
+            <if test="field != null and search != null">
+                t.`${field}` LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test="stime != null and etime != null">
+                and t.`create_time` BETWEEN #{stime} AND #{etime}
+            </if>
+            <if test=" offset != null ">
+                and t.`is_delete`=0
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and order != null">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            LIMIT ${offset}, ${limit}
+        </if>
+    </select>
+
+    <select id="recyleTotal" parameterType="map" resultType="long">
+        SELECT COUNT(*) FROM shop_address
+        <where>
+            <if test="field != null and search != null">
+                #{field} LIKE CONCAT('%', #{search}, '%')
+            </if>
+            <if test=" offset != null ">
+                and `is_delete`=0
+            </if>
+        </where>
+    </select>
+
+    <delete id="physicsDeleteBatch">
+        delete from shop_address where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="emptyRecyle">
+        delete from shop_address where is_delete=0
+    </delete>
+
+    <delete id="deleteBatch">
+        update shop_address set t.`is_delete`=0
+        where id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <resultMap type="map" id="DetailsMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="telNumber" column="tel_number"/>
+        <result property="postalCode" column="postal_code"/>
+        <result property="nationalCode" column="national_code"/>
+        <result property="provinceName" column="province_name"/>
+        <result property="cityName" column="city_name"/>
+        <result property="countyName" column="county_name"/>
+        <result property="detailInfo" column="detail_info"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="status" column="status"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateName" column="updateName"/>
+        <result property="createName" column="createName"/>
+    </resultMap>
+
+    <resultMap type="map" id="listResultMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="telNumber" column="tel_number"/>
+        <result property="postalCode" column="postal_code"/>
+        <result property="nationalCode" column="national_code"/>
+        <result property="provinceName" column="province_name"/>
+        <result property="cityName" column="city_name"/>
+        <result property="countyName" column="county_name"/>
+        <result property="detailInfo" column="detail_info"/>
+        <result property="status" column="status"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateName" column="updateName"/>
+    </resultMap>
+
+    <resultMap type="com.ljb.entity.ApiAddress" id="BaseResultMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="telNumber" column="tel_number"/>
+        <result property="postalCode" column="postal_code"/>
+        <result property="nationalCode" column="national_code"/>
+        <result property="provinceName" column="province_name"/>
+        <result property="cityName" column="city_name"/>
+        <result property="countyName" column="county_name"/>
+        <result property="detailInfo" column="detail_info"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="status" column="status"/>
+        <result property="createId" column="create_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateId" column="update_id"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+	    `id`,    	    `user_id`,    	    `user_name`,    	    `tel_number`,    	    `postal_code`,    	    `national_code`,    	    `province_name`,    	    `city_name`,    	    `county_name`,    	    `detail_info`,    	    `is_delete`,    	    `status`,    	    `create_id`,    	    `create_time`,    	    `update_id`,    	    `update_time`      	</sql>
+
+</mapper>

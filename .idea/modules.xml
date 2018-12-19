@@ -4,14 +4,16 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/lcms.iml" filepath="$PROJECT_DIR$/.idea/lcms.iml" />
       <module fileurl="file://$PROJECT_DIR$/lcms-admin/lcms-admin.iml" filepath="$PROJECT_DIR$/lcms-admin/lcms-admin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/platform-admin/lcms-admin.iml" filepath="$PROJECT_DIR$/platform-admin/lcms-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-cms/lcms-cms.iml" filepath="$PROJECT_DIR$/lcms-cms/lcms-cms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-cms-api/lcms-cms-api.iml" filepath="$PROJECT_DIR$/lcms-cms-api/lcms-cms-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/lcms-common/lcms-common.iml" filepath="$PROJECT_DIR$/lcms-common/lcms-common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/platform-common/lcms-common.iml" filepath="$PROJECT_DIR$/platform-common/lcms-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/lcms-generator/lcms-generator.iml" filepath="$PROJECT_DIR$/lcms-generator/lcms-generator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/platform-generator/lcms-generator.iml" filepath="$PROJECT_DIR$/platform-generator/lcms-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-health/lcms-health.iml" filepath="$PROJECT_DIR$/lcms-health/lcms-health.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-health-api/lcms-health-api.iml" filepath="$PROJECT_DIR$/lcms-health-api/lcms-health-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-kaptcha/lcms-kaptcha.iml" filepath="$PROJECT_DIR$/lcms-kaptcha/lcms-kaptcha.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-shop/lcms-shop.iml" filepath="$PROJECT_DIR$/lcms-shop/lcms-shop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lcms-shop-api/lcms-shop-api.iml" filepath="$PROJECT_DIR$/lcms-shop-api/lcms-shop-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/lcms-sso/lcms-sso.iml" filepath="$PROJECT_DIR$/lcms-sso/lcms-sso.iml" />
-      <module fileurl="file://$PROJECT_DIR$/platform-sso/lcms-sso.iml" filepath="$PROJECT_DIR$/platform-sso/lcms-sso.iml" />
-      <module fileurl="file://$PROJECT_DIR$/platform-ui/lcms-ui.iml" filepath="$PROJECT_DIR$/platform-ui/lcms-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/lcms-web/lcms-web.iml" filepath="$PROJECT_DIR$/lcms-web/lcms-web.iml" />
     </modules>
   </component>

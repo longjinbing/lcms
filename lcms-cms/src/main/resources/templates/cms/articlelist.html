@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:include="lib/css :: css(~{::title},~{})">
+    <title>文章管理</title>
+</head>
+<body>
+<div id="main" v-cloak>
+    <input id="categoryId" type="text" class="input-hidden" v-model="addFormData.categoryId" th:value="${categoryId}">
+    <el-row class="toolbar">
+        <el-col :span="5">
+            <el-input placeholder="请输入内容" v-model="queryParams.text" size="medium" class="input-with-select">
+                <el-select v-model="queryParams.field" slot="prepend" placeholder="请选择">
+                    <el-option label="文章标题" value="title"></el-option>
+                </el-select>
+                <el-button slot="append" @click="loadData" icon="el-icon-search"></el-button>
+            </el-input>
+        </el-col>
+        <el-col :span="18" :offset="1">
+            <el-button type="success" @click="openTab('/cms/addarticle/'+queryParams.pid,'添加文章')" size="medium"><i
+                    class="el-icon-plus">添加文章</i></el-button>
+            <el-button type="primary" @click="publishArticle" size="medium">发布</el-button>
+            <el-button type="warning" @click="stopArticlePublish" size="medium">暂存</el-button>
+            <el-button type="danger" @click="deleteData" size="medium"><i class="el-icon-delete"></i>删除</el-button>
+        </el-col>
+    </el-row>
+    <el-row class="data">
+        <el-table size="mini"
+                  border
+                  v-loading="tableLoading"
+                  @selection-change="selectedChange"
+                  :data="tableData"
+                  @sort-change="sortChange"
+                  style="width: 100%">
+            <el-table-column
+                    type="selection"
+                    width="50">
+            </el-table-column>
+            <el-table-column
+                    type="index"
+                    width="50"
+                    label="序号"
+                    :index="generatorIndex">
+            </el-table-column>
+            <el-table-column
+                    prop="title"
+                    label="标题"
+            width="330">
+                <template slot-scope="scope">
+                    {{limitText(scope.row.title,25)}}
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    prop="author"
+                    label="作者">
+            </el-table-column>
+            <el-table-column
+                    prop="publishTime"
+                    label="发布时间"
+            width="150">
+
+            </el-table-column>
+            <el-table-column
+                    prop="viewCount"
+                    label="浏览数"
+                    width="70">
+            </el-table-column>
+            <el-table-column
+                    prop="orderNum"
+                    label="排序"
+                    width="135">
+                <div th:replace="common/component :: sortbar"></div>
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    label="状态"
+                    width="60">
+                <template slot-scope="scope">
+                    <el-tag
+                            size="mini" :type="tagTypeList[scope.row.status]">
+                        {{statusList[scope.row.status]}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="commentable"
+                    label="能否评价"
+            width="100">
+                <template slot-scope="scope">
+                    <el-tag
+                            size="mini" :type="tagTypeList[scope.row.commentable]">
+                        {{ableList[scope.row.commentable]}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="updateName"
+                    label="操作人">
+            </el-table-column>
+            <el-table-column width="150"
+                             label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini" type="success"
+                            @click="openTab('/cms/editarticle/'+scope.row.id,'编辑文章')">编辑
+                    </el-button>
+                    <el-button
+                            size="mini" type="warning"
+                            @click="openTab('/cms/articledetails/'+scope.row.id,'文章预览')">预览
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+    <div th:replace="common/component :: pagination"></div>
+    <div th:replace="common/component :: exportDialog"></div>
+</div>
+<div th:include="lib/js :: js"></div>
+<script th:src="@{/static/cms/articlelist.js}"></script>
+</body>
+</html>
