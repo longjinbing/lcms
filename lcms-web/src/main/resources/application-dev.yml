@@ -18,7 +18,7 @@ spring:
       userAuthorizationUri: http://localhost:8080/auth/oauth/authorize
       egistered-redirect-uri: http://localhost:8080/sysmenu/menulist
     resource:
-    userInfoUri: http://localhost:8080/auth/user/me
+    userInfoUri: http://localhost:8088/auth/user/me
   servlet:
     multipart:
       location: D:/images/
