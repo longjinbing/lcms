@@ -60,7 +60,7 @@
         <id.generaot.version>2.1</id.generaot.version>
         <mybatis.plus.version>3.0.1</mybatis.plus.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
-        <poi.version>3.15</poi.version>
+        <poi.version>4.1.1</poi.version>
         <jedis.version>2.9.0</jedis.version>
         <thymeleaf.extras.springsecurity5.version>3.0.4.RELEASE</thymeleaf.extras.springsecurity5.version>
         <thymeleaf.layout.dialect.version>2.3.0</thymeleaf.layout.dialect.version>
